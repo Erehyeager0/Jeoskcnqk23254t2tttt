@@ -353,7 +353,7 @@ paid_emotes = {
     # FlirtyWave emote eklemesi (alt/üst harf duyarlılığı dahil)
     "flirtywave": {"value": "emote-flirtywave", "time": 3.5},
     "FlirtyWave": {"value": "emote-flirtywave", "time": 3.5},
-    "106": {"value": "emote-flirtywave", "time": 3.5}  # Sayı ID istersen bunu da ekleyebilirsin
+    "106": {"value": "idle-flirtywave", "time": 3.5}  # Sayı ID istersen bunu da ekleyebilirsin
 }
 
 
