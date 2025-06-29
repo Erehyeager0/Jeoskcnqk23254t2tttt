@@ -22,7 +22,7 @@ class Bot(BaseBot):
         self.user_positions = {} 
         self.position_tasks = {} 
         
-    haricler = ["","","N____9","REDEliff","","1Sweetei1","","","",","] 
+    haricler = ["1Sweetei1","1Sweetei1","","","","","","","",","] 
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
       print(f"{user.username} emoted: {emote_id}")
@@ -30,11 +30,11 @@ class Bot(BaseBot):
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         print("hi im alive?")
         await self.highrise.tg.create_task(self.highrise.teleport(
-            session_metadata.user_id, Position(16.7, 2.25, 12, "FrontLeft")))
+            session_metadata.user_id, Position(17.5, 19.2, 21 , "FrontRight")))
              
 
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        await self.highrise.chat(f"  @{user.username} , ♥️  Merhaba hesabını takip etmeyi unutmayın!! İyi eğlenceler ❤️‍🩹💎 Crewe alım vardır 🫂 ❤️  ")
+        await self.highrise.chat(f"  @{user.username} ,   نورت الروم ارحب")
         try:
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
@@ -46,7 +46,7 @@ class Bot(BaseBot):
     async def on_user_leave(self, user: User):
     
         user_id = user.id
-        farewell_message = f" @{user.username} , 🥺 ben Güle güle, yine bekleriz 🙏🏻👋🏻` demesini istiyorum 🥲"
+        farewell_message = f" @{user.username} , يا حرام ذهب ولم يعد  🥺     "
         if user_id in self.user_emote_loops:
             await self.stop_emote_loop(user_id)
         await self.highrise.chat(farewell_message)
@@ -109,13 +109,11 @@ class Bot(BaseBot):
 
         message = message.lower()
 
-        teleport_locations = {            "طلعني": Position(
-            10.5, 11.7, 7.5),
-                        "فوق": Position(10.5, 6, 3.5),
-                        "k1": Position(
-            10.5, 2.25, 13.0),
-                              "k2": Position(
-            10.5, 12.9, 3.5),
+        teleport_locations = {            "door": Position(
+17.5, 5.25, 13.0),
+            "garden": Position(13.5, 10.5, 20.5),
+            "door": Position(
+17.5, 5.25, 13.0),
         } 
         for location_name, position in teleport_locations.items():
             if message ==(location_name):
@@ -150,7 +148,7 @@ class Bot(BaseBot):
             else:
                 print(f"User {target_username} not found in the room.")
 
-        if message.lower().startswith("ik"):
+        if message.lower().startswith("info"):
             target_username = message.split("@")[-1].strip()
             await self.userinfo(user, target_username)
 
@@ -163,7 +161,7 @@ class Bot(BaseBot):
             await self.adjust_position(user, message, 'z')
               
       
-        allowed_commands = ["بدل", "de", "değiş","değis","degiş"] 
+        allowed_commands = ["بدل", "degis", "değiş","değis","degiş"] 
         if any(message.lower().startswith(command) for command in allowed_commands) and await self.is_user_allowed(user):
             target_username = message.split("@")[-1].strip()
 
@@ -176,7 +174,7 @@ class Bot(BaseBot):
         if                          message.lower().startswith("تب") or message.lower().startswith("tp"):
           target_username =         message.split("@")[-1].strip()
           await                     self.teleport_to_user(user, target_username)
-        if await self.is_user_allowed(user) and message.lower().startswith("br"):
+        if await self.is_user_allowed(user) and message.lower().startswith("هات"):
             target_username = message.split("@")[-1].strip()
             if target_username not in self.haricler:
                 await self.teleport_user_next_to(target_username, user)
@@ -241,7 +239,7 @@ class Bot(BaseBot):
                             print(f"An error occurred while teleporting: {e}")
 
                         self.is_teleporting_dict.pop(target_user.id, None)
-                        final_position = Position(4.0, 0.0, 9.5, "FrontRight")
+                        final_position = Position(1.0, 0.0, 14.5, "FrontRight")
                         await self.teleport(target_user, final_position)
                     
 
@@ -257,16 +255,16 @@ class Bot(BaseBot):
 
         if message.lower() == "الحقني" and await self.is_user_allowed(user):
             if self.following_user is not None:
-                await self.highrise.chat("ادلل من عيوني قلبي")
+                await self.highrise.chat("Şu anda başka birini takip ediyorum, sıranızı bekleyin.")
             else:
                 await self.follow(user)
 
         if message.lower() == "توقف" and await self.is_user_allowed(user):
             if self.following_user is not None:
-                await self.highrise.chat("من عيوني ادلل💋 ")
+                await self.highrise.chat("Takip etmeyi bıraktım.")
                 self.following_user = None
             else:
-                await self.highrise.chat("من عيوني ادلل 💋 ")
+                await self.highrise.chat("Şu anda kimseyi takip etmiyorum.")
               
         if message.lower().startswith("kick") and await self.is_user_allowed(user):
             parts = message.split()
@@ -487,7 +485,7 @@ class Bot(BaseBot):
   
     async def is_user_allowed(self, user: User) -> bool:
         user_privileges = await self.highrise.get_room_privilege(user.id)
-        return user_privileges.moderator or user.username in ["E.L.M.U.T.A.S", "REDEliff", "N_____9", "1Sweetei1"]
+        return user_privileges.moderator or user.username in ["1Sweetei1", "1Sweetei1", "", ""]
 
 #gellllbbb
 
@@ -638,7 +636,7 @@ class Bot(BaseBot):
             print(f"An error occurred while teleporting {target_username} next to {requester_user.username}: {e}")
 
     async def on_tip(self, sender: User, receiver: User, tip: CurrencyItem | Item) -> None:
-        message = f"{sender.username} tarafından {receiver.username}  {tip.amount} 🔥 Thanks so much 🔥."
+        message = f"{sender.username} tarafından {receiver.username} kişine {tip.amount} altın bağış yapıldı."
         await self.highrise.chat(message)
   
     async def reset_target_position(self, target_user_obj: User, initial_position: Position) -> None:
@@ -677,8 +675,8 @@ class WebServer():
     t.start()
     
 class RunBot():
-  room_id = "64159cf2bed1df28637c014f" 
-  bot_token = "984cb68cc036809bfdaf82e47417d89bcb7e1534440bd998a65f8af97e703ddc"
+  room_id = "66c9832a00cf1d85ce00a542" 
+  bot_token = "7b247e5d5d924f1aaec5626d9628b2ec900feea700d3d81fbdff1c49764a40f0"
   bot_file = "main"
   bot_class = "Bot"
 

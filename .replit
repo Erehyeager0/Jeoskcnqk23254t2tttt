@@ -16,4 +16,15 @@ deploymentTarget = "cloudrun"
 
 [[ports]]
 localPort = 8080
-externalPort = 80
+externalPort = 8081
+
+[workflows]
+
+[[workflows.workflow]]
+name = "Start run"
+mode = "parallel"
+author = 42556280
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
