@@ -346,7 +346,8 @@ class Bot(BaseBot):
                     await self.highrise.send_emote(emote_to_send, user.id)
                 except Exception as e:
                     print(f"Emote gönderilirken hata: {e}")
-     if message.lower().startswith("all ") and await self.is_user_allowed(user):
+        
+        if message.lower().startswith("all ") and await self.is_user_allowed(user):
             emote_name = message.replace("all ", "").strip()
             if emote_name in emote_mapping:
                 emote_to_send = emote_mapping[emote_name]["value"]
