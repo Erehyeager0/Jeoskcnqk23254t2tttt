@@ -670,7 +670,7 @@ class WebServer():
       return "Alive"
 
   def run(self) -> None:
-    self.app.run(host='0.0.0.0', port=8080)
+    self.app.run(host='0.0.0.0', port=5000)
 
   def keep_alive(self):
     t = Thread(target=self.run)
