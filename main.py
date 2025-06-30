@@ -53,7 +53,16 @@ class Bot(BaseBot):
   
 
     async def on_chat(self, user: User, message: str) -> None:
-        """Odaya gelen genel sohbet mesajları."""
+        message = message.strip().lower()
+
+        # Diyelim ki '1', '2', '3' gibi mesajlar emote tetikliyor
+        if message in emote_mapping:
+            user_id = user.id
+            # Önce varsa eski emote loop durdur
+            if user_id in self.user_emote_loops:
+                await self.stop_emote_loop(user_id)
+            # Yeni emote loop başlat
+            await self.start_emote_loop(user_id, message)
 
         if message.lower().startswith("rest"):
           await self.highrise.send_emote("sit-idle-cute")
