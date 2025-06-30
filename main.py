@@ -55,14 +55,27 @@ class Bot(BaseBot):
     async def on_chat(self, user: User, message: str) -> None:
         message = message.strip().lower()
 
-        # Diyelim ki '1', '2', '3' gibi mesajlar emote tetikliyor
-        if message in emote_mapping:
-            user_id = user.id
-            # Önce varsa eski emote loop durdur
-            if user_id in self.user_emote_loops:
-                await self.stop_emote_loop(user_id)
-            # Yeni emote loop başlat
-            await self.start_emote_loop(user_id, message)
+   async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
+    # Önceki emote varsa onu durdur
+    if user_id in self.user_emote_loops:
+        await self.stop_emote_loop(user_id)
+
+    # Yeni emote başlat
+    self.user_emote_loops[user_id] = emote_name
+
+    if emote_name in emote_mapping:
+        emote_info = emote_mapping[emote_name]
+        emote_to_send = emote_info["value"]
+        emote_time = emote_info["time"]
+
+        while self.user_emote_loops.get(user_id) == emote_name:
+            try:
+                await self.highrise.send_emote(emote_to_send, user_id)
+            except Exception as e:
+                if "Target user not in room" in str(e):
+                    print(f"{user_id} odada değil, emote gönderme durduruluyor.")
+                    break
+            await asyncio.sleep(emote_time)
 
         if message.lower().startswith("rest"):
           await self.highrise.send_emote("sit-idle-cute")
