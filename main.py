@@ -55,7 +55,7 @@ class Bot(BaseBot):
     async def on_chat(self, user: User, message: str) -> None:
         message = message.strip().lower()
 
-    async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
+   async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
         # Önceki emote varsa onu durdur
         if user_id in self.user_emote_loops:
             await self.stop_emote_loop(user_id)
