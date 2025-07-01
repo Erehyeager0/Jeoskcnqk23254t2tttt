@@ -33,7 +33,7 @@ class Bot(BaseBot):
             session_metadata.user_id, Position(4, 0, 4, "FrontLeft")))
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        await self.highrise.chat(f"Hoşgeldin @{user.username}, Siyah kediden özür dilerim 😔")
+        await self.highrise.chat(f"@{user.username}, odaya hoşgeldin! 🎉🎊")
         try:
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
@@ -690,7 +690,7 @@ class WebServer():
       return "Canlı"
 
   def run(self) -> None:
-    self.app.run(host='0.0.0.0', port=5000)
+    self.app.run(host='0.0.0.0', port=8080)
 
   def keep_alive(self):
     t = Thread(target=self.run)
