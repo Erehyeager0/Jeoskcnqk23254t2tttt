@@ -277,7 +277,7 @@ secili_emote = {
     "wop": {"value": "dance-tiktok11", "time": 11},
     "gift": {"value": "emote-gift", "time": 5},
     "ditzy": {"value": "emote-pose9", "time": 4.5},
-    "smooch": {"value": "emote-kissing-bound", "time": 4.5}
+    "smooch": {"value": "emote-kissing-bound", "time": 4.5},  
 }
 
 
@@ -350,10 +350,7 @@ paid_emotes = {
     "Clumsy": {"value": "emote-fail2", "time": 6.475972},
     "Fall": {"value": "emote-fail1", "time": 5.617942},
     "Exasperated": {"value": "emote-exasperated", "time": 2.367483},
-    # FlirtyWave emote eklemesi (alt/üst harf duyarlılığı dahil)
-    "flirtywave": {"value": "emote-flirtywave", "time": 3.5},
-    "FlirtyWave": {"value": "emote-flirtywave", "time": 3.5},
-    "106": {"value": "idle-flirtywave", "time": 3.5}  # Sayı ID istersen bunu da ekleyebilirsin
+    "laidback": {'value': 'sit-open', 'time': 10}
 }
 
 
