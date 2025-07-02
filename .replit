@@ -15,10 +15,6 @@ run = ["python3", "main.py"]
 deploymentTarget = "cloudrun"
 
 [[ports]]
-localPort = 5000
-externalPort = 5000
-
-[[ports]]
 localPort = 8080
 externalPort = 8080
 
@@ -31,4 +27,7 @@ author = 42556280
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python main.py"
+args = "python3 main.py"
+
+[replit]
+run = "python3 main.py" # ✅ EKLENDİ: Replit çalıştırma komutu

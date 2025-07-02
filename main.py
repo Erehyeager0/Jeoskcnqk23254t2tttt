@@ -28,9 +28,10 @@ class Bot(BaseBot):
         print(f"{user.username} emote gönderdi: {emote_id}")
   
     async def on_start(self, session_metadata: SessionMetadata) -> None:
-        print("Emote botu başarıyla bağlandı ✅")
-        await self.highrise.tg.create_task(self.highrise.teleport(
-            session_metadata.user_id, Position(4, 0, 4, "FrontLeft")))
+    self.user_id = session_metadata.user_id  # Botun kendi ID'sini kaydet
+    print("Emote botu başarıyla bağlandı ✅")
+    await self.highrise.tg.create_task(self.highrise.teleport(
+        session_metadata.user_id, Position(4, 0, 4, "FrontLeft")))
              
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         await self.highrise.chat(f"@{user.username}, odaya hoşgeldin! 🎉🎊")
@@ -62,6 +63,15 @@ class Bot(BaseBot):
 
         if message.lower().startswith("rest"):
             await self.highrise.send_emote("sit-idle-cute")
+        if message == "!bot":
+            try:
+                room_users = await self.highrise.get_room_users()
+                for room_user, position in room_users.content:
+                    if room_user.id == user.id:
+                        await self.highrise.teleport(self.user_id, position)
+                        break
+            except Exception as e:
+                print(f"Bot teleport hatası: {e}")
 
     async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
         # Önceki emote varsa onu durdur
@@ -137,14 +147,16 @@ class Bot(BaseBot):
 
         message = message.lower()
 
-        teleport_locations = {            
-            "k1": Position(10.5, 11.7, 7.5),
-            "k2": Position(0, 0, 0),
-            "k3": Position(8, 0, 3),
-            "k4": Position(10.5, 12.9, 3.5),
+        teleport_locations = {            "طلعني": Position(
+            10.5, 11.7, 7.5),
+                        "فوق": Position(10.5, 6, 3.5),
+                        "k1": Position(
+            10.5, 2.25, 13.0),
+                              "k2": Position(
+            10.5, 12.9, 3.5),
         } 
         for location_name, position in teleport_locations.items():
-            if message == location_name:
+            if message ==(location_name):
                 try:
                     await self.teleport(user, position)
                 except:
