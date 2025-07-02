@@ -319,6 +319,40 @@ class Bot(BaseBot):
             else:
                 await self.highrise.chat("Gözüm üstünde duruyorum 💋 ")
               
+        # Moderation commands
+        if not await self.is_user_allowed(user):
+            pass
+        else:
+            if message.startswith("!kick "):
+                target_name = message[6:].strip()
+                await self.kick_user(target_name, user)
+            elif message.startswith("!mute "):
+                target_name = message[6:].strip()
+                await self.mute_user(target_name, user)
+            elif message.startswith("!unmute "):
+                target_name = message[8:].strip()
+                await self.unmute_user(target_name, user)
+            elif message.startswith("!ban "):
+                target_name = message[5:].strip()
+                await self.ban_user(target_name, user)
+            elif message.startswith("!unban "):
+                target_name = message[7:].strip()
+                await self.unban_user(target_name, user)
+            elif message.startswith("!promote "):
+                target_name = message[9:].strip()
+                await self.promote_user(target_name, user)
+            elif message.startswith("!demote "):
+                target_name = message[8:].strip()
+                await self.demote_user(target_name, user)
+            elif message.startswith("!announce "):
+                ann_msg = message[10:].strip()
+                await self.announce_message(ann_msg, user)
+            elif message == "!listbans":
+                await self.list_bans(user)
+            elif message.startswith("!teleport "):
+                target_name = message[10:].strip()
+                await self.teleport_to_user(user, target_name)
+
         if message.lower().startswith("kick") and await self.is_user_allowed(user):
             parts = message.split()
             if len(parts) != 2:
@@ -728,6 +762,109 @@ class RunBot():
   bot_class = "Bot"
 
   def __init__(self) -> None:
+
+
+    # Moderation methods
+    async def kick_user(self, target_name: str, user: User) -> None:
+        try:
+            room_users = (await self.highrise.get_room_users()).content
+            target_user = None
+            for room_user, pos in room_users:
+                if room_user.username.lower() == target_name.lower():
+                    target_user = room_user
+                    break
+            
+            if target_user:
+                await self.highrise.moderate_room(target_user.id, "kick")
+                await self.highrise.chat(f"{target_name} kullanıcısı odadan atıldı.")
+            else:
+                await self.highrise.chat(f"{target_name} kullanıcısı bulunamadı.")
+        except Exception as e:
+            await self.highrise.chat(f"Kick işleminde hata: {e}")
+
+    async def mute_user(self, target_name: str, user: User) -> None:
+        try:
+            room_users = (await self.highrise.get_room_users()).content
+            target_user = None
+            for room_user, pos in room_users:
+                if room_user.username.lower() == target_name.lower():
+                    target_user = room_user
+                    break
+            
+            if target_user:
+                await self.highrise.moderate_room(target_user.id, "mute")
+                await self.highrise.chat(f"{target_name} kullanıcısı susturuldu.")
+            else:
+                await self.highrise.chat(f"{target_name} kullanıcısı bulunamadı.")
+        except Exception as e:
+            await self.highrise.chat(f"Mute işleminde hata: {e}")
+
+    async def unmute_user(self, target_name: str, user: User) -> None:
+        try:
+            room_users = (await self.highrise.get_room_users()).content
+            target_user = None
+            for room_user, pos in room_users:
+                if room_user.username.lower() == target_name.lower():
+                    target_user = room_user
+                    break
+            
+            if target_user:
+                await self.highrise.moderate_room(target_user.id, "unmute")
+                await self.highrise.chat(f"{target_name} kullanıcısının susturması kaldırıldı.")
+            else:
+                await self.highrise.chat(f"{target_name} kullanıcısı bulunamadı.")
+        except Exception as e:
+            await self.highrise.chat(f"Unmute işleminde hata: {e}")
+
+    async def ban_user(self, target_name: str, user: User) -> None:
+        try:
+            room_users = (await self.highrise.get_room_users()).content
+            target_user = None
+            for room_user, pos in room_users:
+                if room_user.username.lower() == target_name.lower():
+                    target_user = room_user
+                    break
+            
+            if target_user:
+                await self.highrise.moderate_room(target_user.id, "ban")
+                await self.highrise.chat(f"{target_name} kullanıcısı banlandı.")
+            else:
+                await self.highrise.chat(f"{target_name} kullanıcısı bulunamadı.")
+        except Exception as e:
+            await self.highrise.chat(f"Ban işleminde hata: {e}")
+
+    async def unban_user(self, target_name: str, user: User) -> None:
+        try:
+            await self.highrise.moderate_room(target_name, "unban")
+            await self.highrise.chat(f"{target_name} kullanıcısının banı kaldırıldı.")
+        except Exception as e:
+            await self.highrise.chat(f"Unban işleminde hata: {e}")
+
+    async def promote_user(self, target_name: str, user: User) -> None:
+        try:
+            await self.highrise.chat(f"Promote özelliği henüz mevcut değil.")
+        except Exception as e:
+            await self.highrise.chat(f"Promote işleminde hata: {e}")
+
+    async def demote_user(self, target_name: str, user: User) -> None:
+        try:
+            await self.highrise.chat(f"Demote özelliği henüz mevcut değil.")
+        except Exception as e:
+            await self.highrise.chat(f"Demote işleminde hata: {e}")
+
+    async def announce_message(self, message: str, user: User) -> None:
+        try:
+            await self.highrise.chat(f"📢 DUYURU: {message}")
+        except Exception as e:
+            await self.highrise.chat(f"Duyuru işleminde hata: {e}")
+
+    async def list_bans(self, user: User) -> None:
+        try:
+            await self.highrise.chat("Ban listesi özelliği henüz mevcut değil.")
+        except Exception as e:
+            await self.highrise.chat(f"Ban listesi işleminde hata: {e}")
+
+
     self.definitions = [
         BotDefinition(
             getattr(import_module(self.bot_file), self.bot_class)(),
