@@ -735,34 +735,6 @@ class Bot(BaseBot):
             pass
         except Exception as e:
             print(f"Pozisyon takibi sırasında hata oluştu: {e}")  
-  
-  
-    async def run(self, room_id, token) -> None:
-        await __main__.main(self, room_id, token)
-class WebServer():
-
-  def __init__(self):
-    self.app = Flask(__name__)
-
-    @self.app.route('/')
-    def index() -> str:
-      return "Canlı"
-
-  def run(self) -> None:
-    self.app.run(host='0.0.0.0', port=8080)
-
-  def keep_alive(self):
-    t = Thread(target=self.run)
-    t.start()
-    
-class RunBot():
-  room_id = "64159cf2bed1df28637c014f" 
-  bot_token = "984cb68cc036809bfdaf82e47417d89bcb7e1534440bd998a65f8af97e703ddc"
-  bot_file = "main"
-  bot_class = "Bot"
-
-  def __init__(self) -> None:
-
 
     # Moderation methods
     async def kick_user(self, target_name: str, user: User) -> None:
@@ -863,8 +835,32 @@ class RunBot():
             await self.highrise.chat("Ban listesi özelliği henüz mevcut değil.")
         except Exception as e:
             await self.highrise.chat(f"Ban listesi işleminde hata: {e}")
+  
+    async def run(self, room_id, token) -> None:
+        await __main__.main(self, room_id, token)
+class WebServer():
 
+  def __init__(self):
+    self.app = Flask(__name__)
 
+    @self.app.route('/')
+    def index() -> str:
+      return "Canlı"
+
+  def run(self) -> None:
+    self.app.run(host='0.0.0.0', port=8080)
+
+  def keep_alive(self):
+    t = Thread(target=self.run)
+    t.start()
+    
+class RunBot():
+  room_id = "64159cf2bed1df28637c014f" 
+  bot_token = "984cb68cc036809bfdaf82e47417d89bcb7e1534440bd998a65f8af97e703ddc"
+  bot_file = "main"
+  bot_class = "Bot"
+
+  def __init__(self) -> None:
     self.definitions = [
         BotDefinition(
             getattr(import_module(self.bot_file), self.bot_class)(),
