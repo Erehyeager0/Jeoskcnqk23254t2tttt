@@ -85,6 +85,107 @@ class Bot(BaseBot):
                 await self.highrise.teleport(user.id, teleport_locations[message])
             except Exception as e:
                 print(f"Teleport hatası: {e}")
+                        # Moderation commands
+        if not await self.is_user_allowed(user):
+            pass
+        else:
+            if message.startswith("!kick "):
+                target_name = message[6:].strip()
+                await self.kick_user(target_name, user)
+            elif message.startswith("!mute "):
+                target_name = message[6:].strip()
+                await self.mute_user(target_name, user)
+            elif message.startswith("!unmute "):
+                target_name = message[8:].strip()
+                await self.unmute_user(target_name, user)
+            elif message.startswith("!ban "):
+                target_name = message[5:].strip()
+                await self.ban_user(target_name, user)
+            elif message.startswith("!unban "):
+                target_name = message[7:].strip()
+                await self.unban_user(target_name, user)
+            elif message.startswith("!promote "):
+                target_name = message[9:].strip()
+                await self.promote_user(target_name, user)
+            elif message.startswith("!demote "):
+                target_name = message[8:].strip()
+                await self.demote_user(target_name, user)
+            elif message.startswith("!announce "):
+                ann_msg = message[10:].strip()
+                await self.announce_message(ann_msg, user)
+            elif message == "!listbans":
+                await self.list_bans(user)
+            elif message.startswith("!teleport "):
+                target_name = message[10:].strip()
+                await self.teleport_to_user(user, target_name)
+                async def kick_user(self, target_username: str, requester: User):
+    room_users = (await self.highrise.get_room_users()).content
+    target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
+    if target_user:
+        await self.highrise.kick(target_user.id)
+        await self.highrise.send_whisper(requester.id, f"{target_username} odadan atıldı.")
+    else:
+        await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
+
+async def mute_user(self, target_username: str, requester: User):
+    # Bu fonksiyonun içini API'ne göre doldurman gerekebilir.
+    # Örnek olarak sadece whisper ile bilgilendirme yapıyoruz.
+    await self.highrise.send_whisper(requester.id, f"{target_username} susturuldu (simülasyon).")
+
+async def unmute_user(self, target_username: str, requester: User):
+    await self.highrise.send_whisper(requester.id, f"{target_username} susturma kaldırıldı (simülasyon).")
+
+async def ban_user(self, target_username: str, requester: User):
+    room_users = (await self.highrise.get_room_users()).content
+    target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
+    if target_user:
+        await self.highrise.ban(target_user.id)
+        await self.highrise.send_whisper(requester.id, f"{target_username} banlandı.")
+    else:
+        await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
+
+async def unban_user(self, target_username: str, requester: User):
+    # Highrise API'de ban kaldırma nasıl yapılıyorsa oraya göre implement et.
+    await self.highrise.send_whisper(requester.id, f"{target_username} ban kaldırıldı (simülasyon).")
+
+async def promote_user(self, target_username: str, requester: User):
+    room_users = (await self.highrise.get_room_users()).content
+    target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
+    if target_user:
+        await self.highrise.set_room_privilege(target_user.id, moderator=True)
+        await self.highrise.send_whisper(requester.id, f"{target_username} moderatör yapıldı.")
+    else:
+        await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
+
+async def demote_user(self, target_username: str, requester: User):
+    room_users = (await self.highrise.get_room_users()).content
+    target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
+    if target_user:
+        await self.highrise.set_room_privilege(target_user.id, moderator=False)
+        await self.highrise.send_whisper(requester.id, f"{target_username} moderatörlükten çıkarıldı.")
+    else:
+        await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
+
+async def announce_message(self, message: str, requester: User):
+    await self.highrise.chat(f"** Duyuru: {message} **")
+
+async def list_bans(self, requester: User):
+    bans = await self.highrise.get_bans()
+    if bans:
+        ban_list = "\n".join([ban.username for ban in bans])
+        await self.highrise.send_whisper(requester.id, f"Banlı kullanıcılar:\n{ban_list}")
+    else:
+        await self.highrise.send_whisper(requester.id, "Banlı kullanıcı yok.")
+
+async def teleport_to_user(self, requester: User, target_username: str):
+    room_users = (await self.highrise.get_room_users()).content
+    target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
+    if target_user:
+        target_pos = next(pos for u, pos in room_users if u.id == target_user.id)
+        await self.highrise.teleport(requester.id, target_pos)
+        await self.highrise.send_whisper(requester.id, f"{target_username}'ya teleport oldunuz.")
+    else:
+        await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
 
     async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
         # Önceki emote varsa onu durdur
@@ -319,40 +420,6 @@ class Bot(BaseBot):
             else:
                 await self.highrise.chat("Gözüm üstünde duruyorum 💋 ")
               
-        # Moderation commands
-        if not await self.is_user_allowed(user):
-            pass
-        else:
-            if message.startswith("!kick "):
-                target_name = message[6:].strip()
-                await self.kick_user(target_name, user)
-            elif message.startswith("!mute "):
-                target_name = message[6:].strip()
-                await self.mute_user(target_name, user)
-            elif message.startswith("!unmute "):
-                target_name = message[8:].strip()
-                await self.unmute_user(target_name, user)
-            elif message.startswith("!ban "):
-                target_name = message[5:].strip()
-                await self.ban_user(target_name, user)
-            elif message.startswith("!unban "):
-                target_name = message[7:].strip()
-                await self.unban_user(target_name, user)
-            elif message.startswith("!promote "):
-                target_name = message[9:].strip()
-                await self.promote_user(target_name, user)
-            elif message.startswith("!demote "):
-                target_name = message[8:].strip()
-                await self.demote_user(target_name, user)
-            elif message.startswith("!announce "):
-                ann_msg = message[10:].strip()
-                await self.announce_message(ann_msg, user)
-            elif message == "!listbans":
-                await self.list_bans(user)
-            elif message.startswith("!teleport "):
-                target_name = message[10:].strip()
-                await self.teleport_to_user(user, target_name)
-
         if message.lower().startswith("kick") and await self.is_user_allowed(user):
             parts = message.split()
             if len(parts) != 2:
