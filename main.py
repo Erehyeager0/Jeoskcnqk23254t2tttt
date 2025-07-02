@@ -66,14 +66,14 @@ class Bot(BaseBot):
         if message.lower().startswith("rest"):
             await self.highrise.send_emote("sit-idle-cute")
         if message == "!bot" and await self.is_user_allowed(user):
-    try:
-        room_users = await self.highrise.get_room_users()
-        for u, pos in room_users.content:
-            if u.id == user.id:
-                await self.highrise.teleport(self.user_id, pos)
-                break
-    except Exception as e:
-        print(f"Bot teleport hatası: {e}")
+            try:
+                room_users = await self.highrise.get_room_users()
+                for u, pos in room_users.content:
+                    if u.id == user.id:
+                        await self.highrise.teleport(self.user_id, pos)
+                        break
+            except Exception as e:
+                print(f"Bot teleport hatası: {e}")
 
     async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
         # Önceki emote varsa onu durdur
