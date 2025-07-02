@@ -28,12 +28,12 @@ class Bot(BaseBot):
         print(f"{user.username} emote gönderdi: {emote_id}")
         
     async def on_start(self, session_metadata: SessionMetadata) -> None:
-    self.user_id = session_metadata.user_id  # Botun kendi ID'sini kaydet
-    print("Emote botu başarıyla bağlandı ✅")
-    
-    await self.highrise.tg.create_task(
-        self.highrise.teleport(session_metadata.user_id, Position(4, 0, 4, "FrontLeft"))
-    )
+        self.user_id = session_metadata.user_id  # Botun kendi ID'sini kaydet
+        print("Emote botu başarıyla bağlandı ✅")
+        
+        await self.highrise.tg.create_task(
+            self.highrise.teleport(session_metadata.user_id, Position(4, 0, 4, "FrontLeft"))
+        )
     
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
         await self.highrise.chat(f"@{user.username}, odaya hoşgeldin! 🎉🎊")
