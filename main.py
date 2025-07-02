@@ -118,7 +118,8 @@ class Bot(BaseBot):
             elif message.startswith("!teleport "):
                 target_name = message[10:].strip()
                 await self.teleport_to_user(user, target_name)
-                async def kick_user(self, target_username: str, requester: User):
+
+    async def kick_user(self, target_username: str, requester: User):
         room_users = (await self.highrise.get_room_users()).content
         target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
         if target_user:
