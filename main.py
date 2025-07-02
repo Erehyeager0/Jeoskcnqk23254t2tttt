@@ -74,6 +74,17 @@ class Bot(BaseBot):
                         break
             except Exception as e:
                 print(f"Bot teleport hatası: {e}")
+        teleport_locations = {
+    "k1": Position(10.5, 2.25, 13.0),
+    "k2": Position(10.5, 12.9, 3.5),
+    "k3": Position(5.0, 7.0, 8.0),  # İstediğin koordinatları buraya yazabilirsin
+}
+
+if message in teleport_locations:
+    try:
+        await self.highrise.teleport(user.id, teleport_locations[message])
+    except Exception as e:
+        print(f"Teleport hatası: {e}")
 
     async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
         # Önceki emote varsa onu durdur
