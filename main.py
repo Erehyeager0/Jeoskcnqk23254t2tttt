@@ -13,7 +13,7 @@ class Bot(BaseBot):
     def __init__(self):
         super().__init__()
         self.emote_looping = False
-        self.user_emote_loops = {}
+        self.user_emote_tasks = {}
         self.loop_task = None
         self.is_teleporting_dict = {}
         self.following_user = None
@@ -189,34 +189,53 @@ class Bot(BaseBot):
             await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
 
     async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
-        # Önceki emote varsa onu durdur
-        if user_id in self.user_emote_loops:
-            current_emote = self.user_emote_loops[user_id]
-            if current_emote == emote_name:
+    # Aynı kullanıcıda daha önce başlatılmış bir emote döngüsü varsa
+    if user_id in self.user_emote_tasks:
+        current_task = self.user_emote_tasks[user_id]
+        if not current_task.done():
+            # Eğer aynı emote ise tekrar başlatma
+            if getattr(current_task, "emote_name", None) == emote_name:
                 return
             else:
-                await self.stop_emote_loop(user_id)
-
-        # Yeni emote başlat
-        self.user_emote_loops[user_id] = emote_name
-
-        if emote_name in emote_mapping:
-            emote_info = emote_mapping[emote_name]
-            emote_to_send = emote_info["value"]
-            emote_time = emote_info["time"]
-
-            while self.user_emote_loops.get(user_id) == emote_name:
+                # Farklı emote ise önce task'i iptal et
+                current_task.cancel()
                 try:
-                    await self.highrise.send_emote(emote_to_send, user_id)
-                except Exception as e:
-                    if "Target user not in room" in str(e):
-                        print(f"{user_id} odada değil, emote gönderme durduruluyor.")
-                        break
-                await asyncio.sleep(emote_time)
+                    await current_task
+                except asyncio.CancelledError:
+                    pass
+        self.user_emote_tasks.pop(user_id, None)
 
-    async def stop_emote_loop(self, user_id: str) -> None:
-        if user_id in self.user_emote_loops:
-            self.user_emote_loops.pop(user_id)
+    # Yeni emote döngüsü için async task oluştur
+    task = asyncio.create_task(self._emote_loop(user_id, emote_name))
+    task.emote_name = emote_name
+    self.user_emote_tasks[user_id] = task
+
+async def _emote_loop(self, user_id: str, emote_name: str) -> None:
+    if emote_name not in emote_mapping:
+        return
+    emote_info = emote_mapping[emote_name]
+    emote_to_send = emote_info["value"]
+    emote_time = emote_info["time"]
+
+    while True:
+        try:
+            await self.highrise.send_emote(emote_to_send, user_id)
+        except Exception as e:
+            if "Target user not in room" in str(e):
+                print(f"{user_id} odada değil, emote gönderme durduruluyor.")
+                break
+        await asyncio.sleep(emote_time)
+
+async def stop_emote_loop(self, user_id: str) -> None:
+    if user_id in self.user_emote_tasks:
+        task = self.user_emote_tasks[user_id]
+        task.cancel()
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+        self.user_emote_tasks.pop(user_id, None)
+        
         isimler1 = [
             "\n1 - ",
             "\n2 - ",
