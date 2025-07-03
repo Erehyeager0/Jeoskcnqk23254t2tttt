@@ -190,52 +190,52 @@ class Bot(BaseBot):
 
     async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
     # Aynı kullanıcıda daha önce başlatılmış bir emote döngüsü varsa
-    if user_id in self.user_emote_tasks:
-        current_task = self.user_emote_tasks[user_id]
-        if not current_task.done():
-            # Eğer aynı emote ise tekrar başlatma
-            if getattr(current_task, "emote_name", None) == emote_name:
-                return
-            else:
-                # Farklı emote ise önce task'i iptal et
-                current_task.cancel()
-                try:
-                    await current_task
-                except asyncio.CancelledError:
-                    pass
-        self.user_emote_tasks.pop(user_id, None)
+        if user_id in self.user_emote_tasks:
+            current_task = self.user_emote_tasks[user_id]
+            if not current_task.done():
+                # Eğer aynı emote ise tekrar başlatma
+                if getattr(current_task, "emote_name", None) == emote_name:
+                    return
+                else:
+                    # Farklı emote ise önce task'i iptal et
+                    current_task.cancel()
+                    try:
+                        await current_task
+                    except asyncio.CancelledError:
+                        pass
+            self.user_emote_tasks.pop(user_id, None)
 
-    # Yeni emote döngüsü için async task oluştur
-    task = asyncio.create_task(self._emote_loop(user_id, emote_name))
-    task.emote_name = emote_name
-    self.user_emote_tasks[user_id] = task
+        # Yeni emote döngüsü için async task oluştur
+        task = asyncio.create_task(self._emote_loop(user_id, emote_name))
+        task.emote_name = emote_name
+        self.user_emote_tasks[user_id] = task
 
-async def _emote_loop(self, user_id: str, emote_name: str) -> None:
-    if emote_name not in emote_mapping:
-        return
-    emote_info = emote_mapping[emote_name]
-    emote_to_send = emote_info["value"]
-    emote_time = emote_info["time"]
+    async def _emote_loop(self, user_id: str, emote_name: str) -> None:
+        if emote_name not in emote_mapping:
+            return
+        emote_info = emote_mapping[emote_name]
+        emote_to_send = emote_info["value"]
+        emote_time = emote_info["time"]
 
-    while True:
-        try:
-            await self.highrise.send_emote(emote_to_send, user_id)
-        except Exception as e:
-            if "Target user not in room" in str(e):
-                print(f"{user_id} odada değil, emote gönderme durduruluyor.")
-                break
-        await asyncio.sleep(emote_time)
+        while True:
+            try:
+                await self.highrise.send_emote(emote_to_send, user_id)
+            except Exception as e:
+                if "Target user not in room" in str(e):
+                    print(f"{user_id} odada değil, emote gönderme durduruluyor.")
+                    break
+            await asyncio.sleep(emote_time)
 
-async def stop_emote_loop(self, user_id: str) -> None:
-    if user_id in self.user_emote_tasks:
-        task = self.user_emote_tasks[user_id]
-        task.cancel()
-        try:
-            await task
-        except asyncio.CancelledError:
-            pass
-        self.user_emote_tasks.pop(user_id, None)
-        
+    async def stop_emote_loop(self, user_id: str) -> None:
+        if user_id in self.user_emote_tasks:
+            task = self.user_emote_tasks[user_id]
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+            self.user_emote_tasks.pop(user_id, None)
+
         isimler1 = [
             "\n1 - ",
             "\n2 - ",
@@ -688,8 +688,7 @@ async def stop_emote_loop(self, user_id: str) -> None:
         outfit = user_info.user.outfit
         bio = user_info.user.bio
         active_room = user_info.user.active_room
-        crew = user_info.user.crew
-        number_of_following = user_info.user.num_following
+        crew = user_info.user.num_following
         joined_at = user_info.user.joined_at.strftime("%d/%m/%Y %H:%M:%S")
 
         joined_date = user_info.user.joined_at.date()
