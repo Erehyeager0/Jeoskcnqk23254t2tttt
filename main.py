@@ -191,11 +191,11 @@ class Bot(BaseBot):
     async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
         # Önceki emote varsa onu durdur
         if user_id in self.user_emote_loops:
-    current_emote = self.user_emote_loops[user_id]
-    if current_emote == emote_name:
-        return
-    else:
-        await self.stop_emote_loop(user_id)
+            current_emote = self.user_emote_loops[user_id]
+            if current_emote == emote_name:
+                return
+            else:
+                await self.stop_emote_loop(user_id)
 
         # Yeni emote başlat
         self.user_emote_loops[user_id] = emote_name
