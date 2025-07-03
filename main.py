@@ -21,22 +21,22 @@ class Bot(BaseBot):
         self.kus = {}
         self.user_positions = {} 
         self.position_tasks = {} 
-        
+
     haricler = ["","","Carterers","","","",","] 
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emote gönderdi: {emote_id}")
-        
+
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         self.user_id = session_metadata.user_id  # Botun kendi ID'sini kaydet
         print("Emote botu başarıyla bağlandı ✅")
-        
+
         await self.highrise.tg.create_task(
             self.highrise.teleport(session_metadata.user_id, Position(4, 0, 4, "FrontLeft"))
         )
-    
+
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        await self.highrise.chat(f"@{user.username}, odaya hoşgeldin! 🎉🎊")
+        await self.highrise.chat(f"@{user.username}, Kedi Kafe'ye hoşgeldin! 😽😻💖")
         try:
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
@@ -44,7 +44,7 @@ class Bot(BaseBot):
             await self.send_emote(emote_to_send, user.id)
         except Exception as e:
             print(f"Kullanıcıya emote gönderilirken hata oluştu {user.id}: {e}")
-  
+
     async def on_user_leave(self, user: User):
         user_id = user.id
         farewell_message = f"Hoşça kal @{user.username}, yine bekleriz 🙏🏻👋🏻"
@@ -75,9 +75,9 @@ class Bot(BaseBot):
             except Exception as e:
                 print(f"Bot teleport hatası: {e}")
         teleport_locations = {
-            "k1": Position(10.5, 2.25, 13.0),
-            "k2": Position(10.5, 12.9, 3.5),
-            "k3": Position(5.0, 7.0, 8.0),  # İstediğin koordinatları buraya yazabilirsin
+            "k1": Position(10, 0, 8),
+            "k2": Position(15, 4.75, 12),
+            "heykel": Position(10, 10, 8),  # İstediğin koordinatları buraya yazabilirsin
         }
 
         if message in teleport_locations:
@@ -191,7 +191,11 @@ class Bot(BaseBot):
     async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
         # Önceki emote varsa onu durdur
         if user_id in self.user_emote_loops:
-            await self.stop_emote_loop(user_id)
+    current_emote = self.user_emote_loops[user_id]
+    if current_emote == emote_name:
+        return
+    else:
+        await self.stop_emote_loop(user_id)
 
         # Yeni emote başlat
         self.user_emote_loops[user_id] = emote_name
@@ -250,7 +254,7 @@ class Bot(BaseBot):
             "\n26 - "
         ]
 
-        
+
         if message.lower().startswith("banlist"):
               await self.highrise.chat("\n".join(isimler1))
               await self.highrise.chat("\n".join(isimler2))
@@ -276,7 +280,7 @@ class Bot(BaseBot):
                     await self.teleport(user, position)
                 except:
                     print("Teleporlanma sırasında hata oluştu")
-                  
+
         if message.lower().startswith("sustur") and await self.is_user_allowed(user):
             target_username = message.split("@")[-1].strip()
             room_users = await self.highrise.get_room_users()
@@ -314,13 +318,13 @@ class Bot(BaseBot):
             await self.adjust_position(user, message, 'y')
         elif message.startswith("+z") or message.startswith("-z"):
             await self.adjust_position(user, message, 'z')
-              
-      
+
+
         allowed_commands = ["de", "değiş","değis","degiş"] 
         if any(message.lower().startswith(command) for command in allowed_commands) and await self.is_user_allowed(user):
             target_username = message.split("@")[-1].strip()
 
-        
+
             if target_username not in self.haricler:
                 await self.switch_users(user, target_username)
             else:
@@ -396,7 +400,7 @@ class Bot(BaseBot):
                         self.is_teleporting_dict.pop(target_user.id, None)
                         final_position = Position(4.0, 0.0, 9.5, "FrontRight")
                         await self.teleport(target_user, final_position)
-                    
+
 
         if message.lower().startswith("?!;:") and await self.is_user_allowed(user):
             target_username = message.split("@")[-1].strip().lower()
@@ -406,7 +410,7 @@ class Bot(BaseBot):
 
             if target_user:
                 self.is_teleporting_dict.pop(target_user.id, None)
-                
+
 
         if message.lower() == "?!;:''" and await self.is_user_allowed(user):
             if self.following_user is not None:
@@ -420,7 +424,7 @@ class Bot(BaseBot):
                 self.following_user = None
             else:
                 await self.highrise.chat("Gözüm üstünde duruyorum 💋 ")
-              
+
         if message.lower().startswith("kick") and await self.is_user_allowed(user):
             parts = message.split()
             if len(parts) != 2:
@@ -445,30 +449,30 @@ class Bot(BaseBot):
                 return
 
 
-      
+
         message = message.strip().lower()
         user_id = user.id
-      
+
         if message.startswith(""):
             emote_name = message.replace("", "").strip()
             if user_id in self.user_emote_loops and self.user_emote_loops[user_id] == emote_name:
                 await self.stop_emote_loop(user_id)
             else:
                 await self.start_emote_loop(user_id, emote_name)
-                
+
         if message == "stop" or message == "dur" or message == "0":
             if user_id in self.user_emote_loops:
                 await self.stop_emote_loop(user_id)
-                
+
         if message == "durmuske":
             if user_id not in self.user_emote_loops:
                 await self.start_random_emote_loop(user_id)
-                
+
         if message == "stop" or message == "dur":
             if user_id in self.user_emote_loops:
                 if self.user_emote_loops[user_id] == "abekaynana":
                     await self.stop_random_emote_loop(user_id)
-     
+
 
         message = message.strip().lower()
 
@@ -503,7 +507,7 @@ class Bot(BaseBot):
                     await self.highrise.send_emote(emote_to_send, user.id)
                 except Exception as e:
                     print(f"Emote gönderilirken hata: {e}")
-        
+
         if message.lower().startswith("all ") and await self.is_user_allowed(user):
             emote_name = message.replace("all ", "").strip()
             if emote_name in emote_mapping:
@@ -519,7 +523,7 @@ class Bot(BaseBot):
                     await self.highrise.send_whisper(user.id, error_message)
             else:
                 await self.highrise.send_whisper(user.id, f"Geçersiz emote adı: {emote_name}")
-    
+
         message = message.strip().lower()
 
         try:
@@ -534,11 +538,11 @@ class Bot(BaseBot):
                     user_id = next((u.id for u in users if u.username.lower() == args[0][1:].lower()), None)
 
                     if message.lower().startswith("m?!"):
-                        await self.highrise.send_emote("emote-telekinesis", user.id)
+                        await self.highrise.send_emote("emote-telekinesis", user_id)
                         await self.highrise.send_emote("emote-gravity", user_id)
         except Exception as e:
             print(f"Bir hata oluştu: {e}")
-          
+
         if message.startswith("rd") or message.startswith("!grts"):
             try:
                 emote_name = random.choice(list(secili_emote.keys()))
@@ -549,7 +553,7 @@ class Bot(BaseBot):
 
 
 # Numaralı emojiler numaralı emojiler
-  
+
     async def handle_emote_command(self, user_id: str, emote_name: str) -> None:
         if emote_name in emote_mapping:
             emote_info = emote_mapping[emote_name]
@@ -583,14 +587,14 @@ class Bot(BaseBot):
 
 
 # Ücretli emojiler ücretli emojiler ücretli emojiler
-  
+
     async def emote_loop(self):
         while True:
             try:
                 emote_name = random.choice(list(paid_emotes.keys()))
                 emote_to_send = paid_emotes[emote_name]["value"]
                 emote_time = paid_emotes[emote_name]["time"]
-                
+
                 await self.highrise.send_emote(emote_id=emote_to_send)
                 await asyncio.sleep(emote_time)
             except Exception as e:
@@ -622,7 +626,7 @@ class Bot(BaseBot):
 
     async def send_emote(self, emote_to_send: str, user_id: str) -> None:
         await self.highrise.send_emote(emote_to_send, user_id)
-      
+
 
 
     async def on_whisper(self, user: User, message: str) -> None:
@@ -633,10 +637,10 @@ class Bot(BaseBot):
                 await self.highrise.chat(xxx)
             except:
                 print("Hata oluştu 3")
-  
+
     async def is_user_allowed(self, user: User) -> bool:
         user_privileges = await self.highrise.get_room_privilege(user.id)
-        return user_privileges.moderator or user.username in ["Carterers"]
+        return user_privileges.moderator or user.username in ["Carterers", "Kaptankedi", "baby.shark.dududu"]
 
 # gellllbbb
 
@@ -647,7 +651,7 @@ class Bot(BaseBot):
         action_length: int | None = None,
     ) -> None:
         """Odada kullanıcıyı moderatör işlemi yap."""
-  
+
     async def userinfo(self, user: User, target_username: str) -> None:
         user_info = await self.webapi.get_users(username=target_username, limit=1)
 
@@ -688,9 +692,9 @@ class Bot(BaseBot):
             if user_position is not None and isinstance(user_position, Position):
                 nearby_position = Position(user_position.x + 1.0, user_position.y, user_position.z)
                 await self.highrise.walk_to(nearby_position)
-            
+
             await asyncio.sleep(0.5) 
-  
+
     async def adjust_position(self, user: User, message: str, axis: str) -> None:
         try:
             adjustment = int(message[2:])
@@ -723,7 +727,7 @@ class Bot(BaseBot):
             print("Geçersiz pozisyon ayarı. Lütfen +x/-x, +y/-y veya +z/-z ardından bir tam sayı girin.")
         except Exception as e:
             print(f"Pozisyon ayarlanırken hata oluştu: {e}")
-  
+
     async def switch_users(self, user: User, target_username: str) -> None:
         try:
             room_users = await self.highrise.get_room_users()
@@ -787,7 +791,7 @@ class Bot(BaseBot):
     async def on_tip(self, sender: User, receiver: User, tip: CurrencyItem | Item) -> None:
         message = f"{sender.username} tarafından {receiver.username} adlı kişiye {tip.amount} miktarında hediye gönderildi! 🎁 Teşekkürler!"
         await self.highrise.chat(message)
-  
+
     async def reset_target_position(self, target_user_obj: User, initial_position: Position) -> None:
         try:
             while True:
@@ -813,7 +817,7 @@ class WebServer():
 
     @self.app.route('/')
     def index() -> str:
-      return "Canlı"
+      return "Bot çalışıyor ✅"
 
   def run(self) -> None:
     self.app.run(host='0.0.0.0', port=8080)
@@ -821,10 +825,10 @@ class WebServer():
   def keep_alive(self):
     t = Thread(target=self.run)
     t.start()
-    
+
 class RunBot():
   room_id = "64159cf2bed1df28637c014f" 
-  bot_token = "984cb68cc036809bfdaf82e47417d89bcb7e1534440bd998a65f8af97e703ddc"
+  bot_token = "b1f277c4b882bdc40b302089136c4ca5eb7174f9d9131e42927cd4b33110f6f8"
   bot_file = "main"
   bot_class = "Bot"
 
@@ -850,4 +854,4 @@ class RunBot():
 if __name__ == "__main__":
   WebServer().keep_alive()
 
-  RunBot().run_loop()               
+  RunBot().run_loop()

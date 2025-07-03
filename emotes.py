@@ -10,7 +10,7 @@ emote_mapping = {
     "charging": {'value': 'emote-charging', 'time': 8.025079}, 
     "5": {'value': 'emoji-poop', 'time': 8.025079}, 
     "confused": {'value': 'emote-confused', 'time': 8.578827}, 
-    "6": {'value': 'emote-ghost-idle', 'time': 10}, 
+    "6": {'value': 'emote-ghost-idle', 'time': 18.42}, 
     "cursing": {'value': 'emoji-cursing', 'time': 2.382069}, 
     "7": {'value': 'sit-open', 'time': 10}, 
     "101": {'value': 'idle-howl', 'time': 2.425714}, 
@@ -190,7 +190,7 @@ emote_mapping = {
     "99": {"value": "emote-confused", "time": 4.5},
     "95": {"value": "emote-pose9", "time": 4.5},
     "98": {"value": "idle-posh", "time": 4.5},
-    "96": {"value": "emote-kissing-bound", "time": 4.5},
+    "96": {"value": "emote-kissing-bound", "time": 5.5},
     "97": {"value": "emoji-arrogance", "time": 17.253372}
 }
 
@@ -277,7 +277,7 @@ secili_emote = {
     "wop": {"value": "dance-tiktok11", "time": 11},
     "gift": {"value": "emote-gift", "time": 5},
     "ditzy": {"value": "emote-pose9", "time": 4.5},
-    "smooch": {"value": "emote-kissing-bound", "time": 4.5},  
+    "smooch": {"value": "emote-kissing-bound", "time": 5.5},  
 }
 
 
