@@ -14,6 +14,7 @@ class Bot(BaseBot):
         super().__init__()
         self.emote_looping = False
         self.user_emote_tasks = {}
+        self.user_emote_loops = {}
         self.loop_task = None
         self.is_teleporting_dict = {}
         self.following_user = None
