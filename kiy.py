@@ -444,4 +444,5 @@ item_accessory = [
     "watch-n_room12019watch",
     "handbag-n_room32019skateboardxo",
     "handbag-n_room32019skateboardcamo",
+]
     
