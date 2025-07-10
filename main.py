@@ -5,6 +5,7 @@ from flask import Flask
 from threading import Thread
 from highrise.__main__ import *
 from emotes import*
+from equip import equip
 import random
 import asyncio
 import time
@@ -84,8 +85,10 @@ class Bot(BaseBot):
         # Eğer mesaj "stop" ise, emote döngüsünü durdur
         if message == "stop":
             await self.stop_emote_loop(user.id)
+            if message.startswith("-equip"):
+        await equip(self, user, message)
 
-        if message.lower().startswith("rest"):
+        if message.lower().startswith("!botrest"):
             await self.highrise.send_emote("sit-idle-cute")
         if message == "!bot" and await self.is_user_allowed(user):
             try:
