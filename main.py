@@ -69,11 +69,11 @@ class Bot(BaseBot):
         print("Emote botu başarıyla bağlandı ✅")
 
         await self.highrise.tg.create_task(
-            self.highrise.teleport(session_metadata.user_id, Position(4, 0, 4, "FrontLeft"))
+            self.highrise.teleport(session_metadata.user_id, Position(4, 0, 4, "FrontRight"))
         )
 
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        await self.highrise.chat(f"@{user.username}, Eşini Bulmaya hoşgeldin!Sen yeter ki iste kısmetse olur... 🥰😻💓💖💗")
+        await self.highrise.chat(f"@{user.username}, helele odasına hoşgeldin!🫦👅🌚")
         try:
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
@@ -99,13 +99,10 @@ class Bot(BaseBot):
         # Eğer mesaj "stop" ise, emote döngüsünü durdur
         if message == "stop":
             await self.stop_emote_loop(user.id)
-        
-        if message.startswith("-equip"):
-            await equip(self, user, message)
 
         if message.lower().startswith("!botrest"):
             await self.highrise.send_emote("sit-idle-cute")
-        if message.lower().startswith("degis1") and await self.is_user_allowed(user):
+        if message.lower().startswith("degistir"):
             hair_active_palette = random.randint(0, 82)
             skin_active_palette = random.randint(0, 88)
             eye_active_palette = random.randint(0, 49)
@@ -137,7 +134,7 @@ class Bot(BaseBot):
             except Exception as e:
                 print(f"Bot teleport hatası: {e}")
         teleport_locations = {
-            "k1": Position(10, 0, 8),
+            "k1": Position(10, 0, 18),
             "k2": Position(15, 4.75, 12),
             "heykel": Position(10, 10, 8),  # İstediğin koordinatları buraya yazabilirsin
         }
@@ -721,7 +718,7 @@ class Bot(BaseBot):
 
     async def is_user_allowed(self, user: User) -> bool:
         user_privileges = await self.highrise.get_room_privilege(user.id)
-        return user_privileges.moderator or user.username in ["Carterers", "BatuKeko", "kekocu"]
+        return user_privileges.moderator or user.username in ["Carterers", "Evo.lul", "_Posion.Twd"]
 
 # gellllbbb
 
@@ -907,31 +904,46 @@ class WebServer():
     t.start()
 
 class RunBot():
-  room_id = "64159cf2bed1df28637c014f" 
-  bot_token = "b12ccae2fb89720ec1199c5759c4d5251a76ef0ea97ad3ba8ead76648f87b2e1"
-  bot_file = "main"
-  bot_class = "Bot"
+    room_id = "686fb0b4d4c825eec483f1a3" 
+    bot_token = "b12ccae2fb89720ec1199c5759c4d5251a76ef0ea97ad3ba8ead76648f87b2e1"
+    bot_file = "main"
+    bot_class = "Bot"
 
-  def __init__(self) -> None:
-    self.definitions = [
-        BotDefinition(
-            getattr(import_module(self.bot_file), self.bot_class)(),
-            self.room_id, self.bot_token)
-    ] 
+    def __init__(self) -> None:
+        self.definitions = [
+            BotDefinition(
+                getattr(import_module(self.bot_file), self.bot_class)(),
+                self.room_id, self.bot_token)
+        ] 
 
-  def run_loop(self) -> None:
-    while True:
-      try:
-        arun(main(self.definitions)) 
-      except Exception as e:
-        import traceback
-        print("Bir hata yakalandı:")
-        traceback.print_exc()
-        time.sleep(1)
-        continue
+    def run_loop(self) -> None:
+        import asyncio
+        import time
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+        while True:
+            try:
+                loop.run_until_complete(main(self.definitions))
+            except Exception as e:
+                import traceback
+                print("Bir hata yakalandı:")
+                traceback.print_exc()
+                time.sleep(1)
 
 
 if __name__ == "__main__":
   WebServer().keep_alive()
 
-  RunBot().run_loop()
+  from threading import Thread
+
+  def start_bot():
+    try:
+      RunBot().run_loop()
+    except Exception as e:
+      import traceback
+      print("Bot çöktü:")
+      traceback.print_exc()
+
+  Thread(target=start_bot).start()
