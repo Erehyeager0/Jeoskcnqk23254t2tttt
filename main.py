@@ -5,7 +5,21 @@ from flask import Flask
 from threading import Thread
 from highrise.__main__ import *
 from emotes import*
-from equip import equip
+from kiy import (
+    item_hairfront,
+    item_hairback,
+    item_facehair,
+    item_eyebrow,
+    item_eye,
+    item_nose,
+    item_mouth,
+    item_shirt,
+    item_bottom,
+    item_shoes,
+    item_accessory,
+    item_freckle
+)
+import random
 import random
 import asyncio
 import time
@@ -91,6 +105,28 @@ class Bot(BaseBot):
 
         if message.lower().startswith("!botrest"):
             await self.highrise.send_emote("sit-idle-cute")
+        if message.lower().startswith("degis1") and await self.is_user_allowed(user):
+            hair_active_palette = random.randint(0, 82)
+            skin_active_palette = random.randint(0, 88)
+            eye_active_palette = random.randint(0, 49)
+            lip_active_palette = random.randint(0, 58)
+
+            outfit = [
+                Item(type='clothing', amount=1, id='body-flesh', account_bound=False, active_palette=skin_active_palette),
+                Item(type='clothing', amount=1, id=random.choice(item_shirt), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_bottom), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_accessory), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_shoes), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_freckle), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_eye), account_bound=False, active_palette=eye_active_palette),
+                Item(type='clothing', amount=1, id=random.choice(item_mouth), account_bound=False, active_palette=lip_active_palette),
+                Item(type='clothing', amount=1, id=random.choice(item_nose), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_hairback), account_bound=False, active_palette=hair_active_palette),
+                Item(type='clothing', amount=1, id=random.choice(item_hairfront), account_bound=False, active_palette=hair_active_palette),
+                Item(type='clothing', amount=1, id=random.choice(item_eyebrow), account_bound=False, active_palette=hair_active_palette)
+            ]
+
+            await self.highrise.set_outfit(outfit=outfit)
         if message == "!bot" and await self.is_user_allowed(user):
             try:
                 room_users = await self.highrise.get_room_users()
