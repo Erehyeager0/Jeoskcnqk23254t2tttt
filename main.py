@@ -85,8 +85,9 @@ class Bot(BaseBot):
         # Eğer mesaj "stop" ise, emote döngüsünü durdur
         if message == "stop":
             await self.stop_emote_loop(user.id)
-            if message.startswith("-equip"):
-        await equip(self, user, message)
+        
+        if message.startswith("-equip"):
+            await equip(self, user, message)
 
         if message.lower().startswith("!botrest"):
             await self.highrise.send_emote("sit-idle-cute")
