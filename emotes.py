@@ -2,7 +2,7 @@ import asyncio
 from highrise import BaseBot
 from highrise.models import User, Position, AnchorPosition
 
-emote_list = [
+emote_mapping = {
     (['rest', 'REST', 'Rest'], 'sit-idle-cute', 17.06),
     (['zombie', 'ZOMBIE', 'Zombie'], 'idle_zombie', 28.75),
     (['relaxed', 'RElAXED', 'Relaxed'], 'idle_layingdown2', 20.55),
