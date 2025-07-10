@@ -443,7 +443,8 @@ item_accessory = [
     "watch-n_room32019blackwatch",
     "watch-n_room12019watch",
     "handbag-n_room32019skateboardxo",
-    "handbag-n_room32019skateboardcamo",
+    "handbag-n_room32019skateboardcamo"
+]
 
 item_freckle = [
     "freckle-n_basic2018freckles",
