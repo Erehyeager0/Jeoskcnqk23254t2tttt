@@ -37,7 +37,7 @@ class Bot(BaseBot):
         )
 
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        await self.highrise.chat(f"@{user.username}, Kedi Kafe'ye hoşgeldin! 😽😻💖")
+        await self.highrise.chat(f"@{user.username}, Eşini Bulmaya hoşgeldin!Sen yeter ki iste kısmetse olur... 🥰😻💓💖💗")
         try:
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
@@ -660,7 +660,7 @@ class Bot(BaseBot):
 
     async def is_user_allowed(self, user: User) -> bool:
         user_privileges = await self.highrise.get_room_privilege(user.id)
-        return user_privileges.moderator or user.username in ["Carterers", "Kaptankedi", "baby.shark.dududu"]
+        return user_privileges.moderator or user.username in ["Carterers", "BatuKeko", "kekocu"]
 
 # gellllbbb
 
@@ -847,7 +847,7 @@ class WebServer():
 
 class RunBot():
   room_id = "64159cf2bed1df28637c014f" 
-  bot_token = "b1f277c4b882bdc40b302089136c4ca5eb7174f9d9131e42927cd4b33110f6f8"
+  bot_token = "b12ccae2fb89720ec1199c5759c4d5251a76ef0ea97ad3ba8ead76648f87b2e1"
   bot_file = "main"
   bot_class = "Bot"
 
