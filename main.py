@@ -9,6 +9,27 @@ import random
 import asyncio
 import time
 
+# Create emote_mapping dictionary from emote_list
+emote_mapping = {}
+secili_emote = {}
+paid_emotes = {}
+
+for emote_data in emote_list:
+    aliases, emote_id, duration = emote_data
+    # Use first alias as the main key
+    main_key = aliases[0].lower()
+    emote_info = {"value": emote_id, "time": duration}
+    
+    # Add all aliases to emote_mapping
+    for alias in aliases:
+        emote_mapping[alias.lower()] = emote_info
+    
+    # Add to secili_emote (appears to be used for random selection)
+    secili_emote[main_key] = emote_info
+    
+    # Add to paid_emotes as well
+    paid_emotes[main_key] = emote_info
+
 class Bot(BaseBot):
     def __init__(self):
         super().__init__()
