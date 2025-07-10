@@ -19,6 +19,7 @@ localPort = 8080
 externalPort = 8080
 
 [workflows]
+runButton = "Run Bot"
 
 [[workflows.workflow]]
 name = "Start run"
@@ -28,6 +29,15 @@ author = 42556280
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python3 main.py"
+
+[[workflows.workflow]]
+name = "Run Bot"
+author = 44227344
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python main.py"
 
 [replit]
 run = "python3 main.py" # ✅ EKLENDİ: Replit çalıştırma komutu

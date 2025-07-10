@@ -920,20 +920,43 @@ class RunBot():
         import asyncio
         import time
 
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
         while True:
             try:
-                loop.run_until_complete(main(self.definitions))
+                # Create a new event loop for each iteration
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                
+                try:
+                    loop.run_until_complete(main(self.definitions))
+                finally:
+                    # Properly close the loop
+                    try:
+                        # Cancel all running tasks
+                        pending = asyncio.all_tasks(loop)
+                        for task in pending:
+                            task.cancel()
+                        
+                        # Wait for all tasks to complete cancellation
+                        if pending:
+                            loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+                    except:
+                        pass
+                    
+                    # Close the loop
+                    loop.close()
+                    
             except Exception as e:
                 import traceback
                 print("Bir hata yakalandı:")
                 traceback.print_exc()
-                time.sleep(1)
+                time.sleep(3)  # Wait a bit longer before retrying
 
 
 if __name__ == "__main__":
+  import signal
+  import sys
+  
+  # Start web server
   WebServer().keep_alive()
 
   from threading import Thread
@@ -941,9 +964,29 @@ if __name__ == "__main__":
   def start_bot():
     try:
       RunBot().run_loop()
+    except KeyboardInterrupt:
+      print("Bot durduruluyor...")
+      sys.exit(0)
     except Exception as e:
       import traceback
       print("Bot çöktü:")
       traceback.print_exc()
 
-  Thread(target=start_bot).start()
+  def signal_handler(sig, frame):
+    print("Uygulama kapatılıyor...")
+    sys.exit(0)
+
+  # Handle shutdown signals
+  signal.signal(signal.SIGINT, signal_handler)
+  signal.signal(signal.SIGTERM, signal_handler)
+
+  bot_thread = Thread(target=start_bot)
+  bot_thread.daemon = True
+  bot_thread.start()
+  
+  # Keep the main thread alive
+  try:
+    bot_thread.join()
+  except KeyboardInterrupt:
+    print("Ana thread durduruluyor...")
+    sys.exit(0)
