@@ -2,7 +2,7 @@ import asyncio
 from highrise import BaseBot
 from highrise.models import User, Position, AnchorPosition
 
-emote_mapping = {
+emote_list = [
     (['rest', 'REST', 'Rest'], 'sit-idle-cute', 17.06),
     (['zombie', 'ZOMBIE', 'Zombie'], 'idle_zombie', 28.75),
     (['relaxed', 'RElAXED', 'Relaxed'], 'idle_layingdown2', 20.55),
@@ -216,7 +216,7 @@ emote_mapping = {
     (["220", "wop dance", "Wop Dance"], "dance-tiktok11", 9.5),
     (["221", "cute salute", "Cute Salute"], "emote-cutesalute", 3),
     (["222", "at attention", "At Attention"], "emote-salute", 3),
-}
+]
 
 # Function to start/stop an emote loop based on user message
 async def check_and_start_emote_loop(self: BaseBot, user: User, message: str):
