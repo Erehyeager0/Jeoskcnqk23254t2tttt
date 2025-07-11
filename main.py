@@ -180,6 +180,7 @@ class Bot(BaseBot):
                     await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
             else:
                 await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanici [konum]")
+            return
 
         elif message.startswith("!gel "):
             target_username = message[5:].strip().lstrip("@")
@@ -192,6 +193,7 @@ class Bot(BaseBot):
                 await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni yanına ışınladı.")
             else:
                 await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
+            return
 
         elif message.startswith("!goto "):
             loc = message[6:].strip().lower()
@@ -200,6 +202,7 @@ class Bot(BaseBot):
                 await self.highrise.send_whisper(user.id, f"✅ '{loc}' konumuna ışınlandın.")
             else:
                 await self.highrise.send_whisper(user.id, f"❌ '{loc}' konumu bulunamadı.")
+            return
 
         elif message.startswith("!bringall "):
             loc = message[10:].strip().lower()
@@ -213,6 +216,7 @@ class Bot(BaseBot):
                 await self.highrise.send_whisper(user.id, f"✅ Tüm kullanıcılar '{loc}' konumuna taşındı.")
             else:
                 await self.highrise.send_whisper(user.id, f"❌ '{loc}' konumu bulunamadı.")
+            return
 
         elif message.startswith("!say "):
             text = message[5:].strip()
@@ -220,25 +224,44 @@ class Bot(BaseBot):
                 await self.highrise.chat(text)
             else:
                 await self.highrise.send_whisper(user.id, "⚠️ Boş mesaj gönderilemez.")
+            return
 
         elif message.startswith("!kick "):
             await self.kick_user(message[6:].strip(), user)
+            return
+
         elif message.startswith("!ban "):
             await self.ban_user(message[5:].strip(), user)
+            return
+
         elif message.startswith("!unban "):
             await self.unban_user(message[7:].strip(), user)
+            return
+
         elif message.startswith("!mute "):
             await self.mute_user(message[6:].strip(), user)
+            return
+
         elif message.startswith("!unmute "):
             await self.unmute_user(message[8:].strip(), user)
+            return
+
         elif message.startswith("!promote "):
             await self.promote_user(message[9:].strip(), user)
+            return
+
         elif message.startswith("!demote "):
             await self.demote_user(message[8:].strip(), user)
+            return
+
         elif message.startswith("!announce "):
             await self.announce_message(message[10:].strip(), user)
+            return
+
         elif message == "!listbans":
             await self.list_bans(user)
+            return
+
         elif message == "-helpmod":
             help_text = (
                 "🔒 **Moderatör Komutları:**\n\n"
@@ -259,13 +282,14 @@ class Bot(BaseBot):
                 "📋 `!listbans` → Banlıları listeler."
             )
             await self.highrise.send_whisper(user.id, help_text)
-        return
+            return
 
-    # Yetkili değilse ama komut deniyorsa uyar
-    elif any(message.startswith(cmd) for cmd in [
+    # Yetkisiz kullanıcı komut denediğinde uyar
+    restricted_cmds = [
         "!tp", "!gel", "!kick", "!ban", "!unban", "!mute", "!unmute",
         "!promote", "!demote", "!announce", "!say", "!bringall", "!goto", "!listbans"
-    ]):
+    ]
+    if any(message.startswith(cmd) for cmd in restricted_cmds):
         await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
     async def kick_user(self, target_username: str, requester: User):
