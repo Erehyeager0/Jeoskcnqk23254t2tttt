@@ -289,7 +289,7 @@ class Bot(BaseBot):
             await self.highrise.send_whisper(user.id, help_text)
             return
         if await self.is_user_allowed(user):
-    if message.startswith("!tp "):
+            if message.startswith("!tp "):
         ...
     elif message.startswith("!gel "):
         ...
