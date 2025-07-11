@@ -159,8 +159,7 @@ class Bot(BaseBot):
 
         # Yetkili kullanıcı komutları
         if await self.is_user_allowed(user):
-
-        if message.startswith("!tp "):
+            if message.startswith("!tp "):
                 parts = message.split()
                 if len(parts) >= 2:
                     target_username = parts[1].lstrip("@")
