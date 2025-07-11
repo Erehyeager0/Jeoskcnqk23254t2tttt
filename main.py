@@ -175,10 +175,10 @@ class Bot(BaseBot):
                         await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
                         await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
                     else:
-room_users = await self.highrise.get_room_users()
-target_pos = next((pos for u, pos in room_users.content if u.username.lower() == target_username.lower()), None)
-if target_pos:
-    await self.highrise.teleport(user.id, target_pos)
+                        room_users = await self.highrise.get_room_users()
+                        target_pos = next((pos for u, pos in room_users.content if u.username.lower() == target_username.lower()), None)
+                        if target_pos:
+                            await self.highrise.teleport(user.id, target_pos)
                         await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
                 else:
                     await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanici [konum]")
@@ -190,10 +190,10 @@ if target_pos:
                 target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
 
                 if target_user:
-room_users = await self.highrise.get_room_users()
-user_pos = next((pos for u, pos in room_users.content if u.id == user.id), None)
-if user_pos:
-    await self.highrise.teleport(target_user.id, user_pos)
+                    room_users = await self.highrise.get_room_users()
+                    user_pos = next((pos for u, pos in room_users.content if u.id == user.id), None)
+                    if user_pos:
+                        await self.highrise.teleport(target_user.id, user_pos)
                     await self.highrise.send_whisper(user.id, f"✅ {target_username} yanına ışınlandı.")
                     await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni yanına ışınladı.")
                 else:
