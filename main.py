@@ -210,37 +210,37 @@ class Bot(BaseBot):
             elif message.startswith("!bringall "):
                 hedef = message[10:].strip().lower()
 
-    # Eğer hedef hazır konumsa
-    if hedef in ready_locations:
+                # Eğer hedef hazır konumsa
+                if hedef in ready_locations:
         room_users = await self.highrise.get_room_users()
-        for u, _ in room_users.content:
-            if u.id != self.user_id:  # Bot kendini ışınlamasın
-                try:
-                    await self.highrise.teleport(u.id, ready_locations[hedef])
-                except Exception:
-                    pass
-        await self.highrise.send_whisper(user.id, f"✅ Tüm kullanıcılar '{hedef}' konumuna taşındı.")
+                    for u, _ in room_users.content:
+                        if u.id != self.user_id:  # Bot kendini ışınlamasın
+                            try:
+                                await self.highrise.teleport(u.id, ready_locations[hedef])
+                            except Exception:
+                                pass
+                    await self.highrise.send_whisper(user.id, f"✅ Tüm kullanıcılar '{hedef}' konumuna taşındı.")
 
-    else:
-        # Kullanıcıya ışınlama modu
-        target_user = None
-        room_users = await self.highrise.get_room_users()
-        for u, pos in room_users.content:
-            if u.username.lower() == hedef and u.id != self.user_id:
-                target_user = (u, pos)
-                break
+                else:
+                    # Kullanıcıya ışınlama modu
+                    target_user = None
+                    room_users = await self.highrise.get_room_users()
+                    for u, pos in room_users.content:
+                        if u.username.lower() == hedef and u.id != self.user_id:
+                            target_user = (u, pos)
+                            break
 
-        if target_user:
-            for u, _ in room_users.content:
-                if u.id != self.user_id and u.id != target_user[0].id:
-                    try:
-                        await self.highrise.teleport(u.id, target_user[1])
-                    except Exception:
-                        pass
-            await self.highrise.send_whisper(user.id, f"✅ Tüm kullanıcılar {target_user[0].username} kullanıcısının yanına taşındı.")
-        else:
-            await self.highrise.send_whisper(user.id, f"❌ '{hedef}' konumu veya kullanıcı bulunamadı.")
-    return
+                    if target_user:
+                        for u, _ in room_users.content:
+                            if u.id != self.user_id and u.id != target_user[0].id:
+                                try:
+                                    await self.highrise.teleport(u.id, target_user[1])
+                                except Exception:
+                                    pass
+                        await self.highrise.send_whisper(user.id, f"✅ Tüm kullanıcılar {target_user[0].username} kullanıcısının yanına taşındı.")
+                    else:
+                        await self.highrise.send_whisper(user.id, f"❌ '{hedef}' konumu veya kullanıcı bulunamadı.")
+                return
 
             elif message.startswith("!say "):
                 text = message[5:].strip()
