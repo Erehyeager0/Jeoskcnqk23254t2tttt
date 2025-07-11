@@ -157,48 +157,46 @@ class Bot(BaseBot):
                 print(f"Teleport hatası: {e}")
             return
 
-        # Yetkili kullanıcı komutları
-        if await self.is_user_allowed(user):
-            if message.startswith("!tp "):
-                parts = message.split()
-                if len(parts) >= 2:
-                    target_username = parts[1].lstrip("@")
-                    target_location = parts[2] if len(parts) > 2 else None
+    # Yetkili kullanıcı mı kontrolü
+    if await self.is_user_allowed(user):
+        if message.startswith("!tp "):
+            parts = message.split()
+            if len(parts) >= 2:
+                target_username = parts[1].lstrip("@")
+                target_location = parts[2] if len(parts) > 2 else None
 
-                    room_users = await self.highrise.get_room_users()
-                    target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
-
-                    if not target_user:
-                        await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
-                    elif target_location and target_location in ready_locations:
-                        await self.highrise.teleport(target_user.id, ready_locations[target_location])
-                        await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
-                        await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
-                    else:
-                        room_users = await self.highrise.get_room_users()
-                        target_pos = next((pos for u, pos in room_users.content if u.username.lower() == target_username.lower()), None)
-                        if target_pos:
-                            await self.highrise.teleport(user.id, target_pos)
-                        await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
-                else:
-                    await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanici [konum]")
-                return
-
-            elif message.startswith("!gel "):
-                target_username = message[5:].strip().lstrip("@")
                 room_users = await self.highrise.get_room_users()
                 target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
 
-                if target_user:
-                    room_users = await self.highrise.get_room_users()
-                    user_pos = next((pos for u, pos in room_users.content if u.id == user.id), None)
-                    if user_pos:
-                        await self.highrise.teleport(target_user.id, user_pos)
-                    await self.highrise.send_whisper(user.id, f"✅ {target_username} yanına ışınlandı.")
-                    await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni yanına ışınladı.")
-                else:
+                if not target_user:
                     await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
-                return
+                elif target_location and target_location in ready_locations:
+                    await self.highrise.teleport(target_user.id, ready_locations[target_location])
+                    await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
+                    await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
+                else:
+                    target_pos = next((pos for u, pos in room_users.content if u.username.lower() == target_username.lower()), None)
+                    if target_pos:
+                        await self.highrise.teleport(user.id, target_pos)
+                    await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
+            else:
+                await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanici [konum]")
+            return
+
+        elif message.startswith("!gel "):
+            target_username = message[5:].strip().lstrip("@")
+            room_users = await self.highrise.get_room_users()
+            target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
+
+            if target_user:
+                user_pos = next((pos for u, pos in room_users.content if u.id == user.id), None)
+                if user_pos:
+                    await self.highrise.teleport(target_user.id, user_pos)
+                await self.highrise.send_whisper(user.id, f"✅ {target_username} yanına ışınlandı.")
+                await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni yanına ışınladı.")
+            else:
+                await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
+            return
 
         elif message.startswith("!goto "):
             loc = message[6:].strip().lower()
@@ -267,7 +265,7 @@ class Bot(BaseBot):
             await self.list_bans(user)
             return
 
-        elif message == "!helpmod":
+        elif message == "-helpmod" or message == "!helpmod":
             help_text = (
                 "🔒 **Moderatör Komutları:**\n\n"
                 "🧍‍♂️ `!tp @kullanici` → Belirttiğin kullanıcıya ışınlanırsın.\n"
@@ -288,13 +286,14 @@ class Bot(BaseBot):
             )
             await self.highrise.send_whisper(user.id, help_text)
             return
+
     # Yetkisiz kullanıcı komut denediğinde uyar
-        restricted_cmds = [
-            "!tp", "!gel", "!kick", "!ban", "!unban", "!mute", "!unmute",
-            "!promote", "!demote", "!announce", "!say", "!bringall", "!goto", "!listbans"
-        ]
-        if any(message.startswith(cmd) for cmd in restricted_cmds):
-            await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
+    restricted_cmds = [
+        "!tp", "!gel", "!kick", "!ban", "!unban", "!mute", "!unmute",
+        "!promote", "!demote", "!announce", "!say", "!bringall", "!goto", "!listbans"
+    ]
+    if any(message.startswith(cmd) for cmd in restricted_cmds):
+        await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
     async def kick_user(self, target_username: str, requester: User):
         room_users = (await self.highrise.get_room_users()).content
