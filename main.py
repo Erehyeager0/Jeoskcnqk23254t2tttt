@@ -212,7 +212,7 @@ class Bot(BaseBot):
 
                 # Eğer hedef hazır konumsa
                 if hedef in ready_locations:
-        room_users = await self.highrise.get_room_users()
+                    room_users = await self.highrise.get_room_users()
                     for u, _ in room_users.content:
                         if u.id != self.user_id:  # Bot kendini ışınlamasın
                             try:
