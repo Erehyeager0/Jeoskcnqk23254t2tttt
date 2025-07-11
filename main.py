@@ -265,25 +265,15 @@ class Bot(BaseBot):
                 await self.list_bans(user)
                 return
 
-            elif message == "-helpmod" or message == "!helpmod":
-                help_text = (
-                    "🔒 **Moderatör Komutları:**\n\n"
-                    "🧍‍♂️ `!tp @kullanici` → Belirttiğin kullanıcıya ışınlanırsın.\n"
-                    "📍 `!tp @kullanici konum` → Kullanıcıyı hazır konuma ışınlarsın.\n"
-                    "📥 `!gel @kullanici` → Kullanıcıyı yanına ışınlarsın.\n"
-                    "🧭 `!goto konum` → Kendini hazır konuma ışınlarsın.\n"
-                    "🧲 `!bringall konum` → Herkesi belirli bir konuma ışınlarsın.\n"
-                    "🗣️ `!say mesaj` → Bot ile odaya mesaj gönder.\n"
-                    "🚫 `!ban @kullanici` → Kullanıcıyı banlar.\n"
-                    "🔓 `!unban @kullanici` → Ban kaldırır.\n"
-                    "🔇 `!mute @kullanici` → Susturur.\n"
-                    "🔊 `!unmute @kullanici` → Susturmayı kaldırır.\n"
-                    "💨 `!kick @kullanici` → Odan atar.\n"
-                    "⬆️ `!promote @kullanici` → Mod yapar.\n"
-                    "⬇️ `!demote @kullanici` → Modluğunu alır.\n"
-                    "📣 `!announce mesaj` → Odaya mesaj.\n"
-                    "📋 `!listbans` → Banlıları listeler."
-                )
+            elif message in ["-helpmod", "!helpmod"]:
+    await self.highrise.send_whisper(user.id, "🔒 **Moderatör Komutları:**\n"
+        "🧍‍♂️ `!tp @kullanici` → Belirttiğin kullanıcıya ışınlanırsın.\n"
+        "📍 `!tp @kullanici konum` → Kullanıcıyı hazır konuma ışınlarsın.\n"
+        "📥 `!gel @kullanici` → Kullanıcıyı yanına ışınlarsın.\n"
+        "🧲 `!bringall konum` → Herkesi belirli bir konuma ışınlarsın.\n"
+        "🗣️ `!say mesaj` → Bot ile odaya mesaj gönder.\n\n"
+        "Carterers'in selamı var 🌚")
+    
                 await self.highrise.send_whisper(user.id, help_text)
                 return
 
