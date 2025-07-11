@@ -126,7 +126,7 @@ class Bot(BaseBot):
         await self.highrise.set_outfit(outfit=outfit)
 
     # Bot kendini kullanıcıya ışınlar
-    elif message == "!bot" and await self.is_user_allowed(user):
+    if message == "!bot" and await self.is_user_allowed(user):
         try:
             room_users = await self.highrise.get_room_users()
             for u, pos in room_users.content:
