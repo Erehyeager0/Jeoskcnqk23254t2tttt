@@ -208,7 +208,7 @@ class Bot(BaseBot):
                 return
 
             elif message.startswith("!bringall "):
-    hedef = message[10:].strip().lower()
+                hedef = message[10:].strip().lower()
 
     # Eğer hedef hazır konumsa
     if hedef in ready_locations:
