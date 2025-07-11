@@ -90,7 +90,7 @@ class Bot(BaseBot):
         await self.highrise.chat(farewell_message)
 
     async def on_chat(self, user: User, message: str) -> None:
-    message = message.strip().lower()
+        message = message.strip().lower()
 
     # Emote başlat / durdur
     if message in emote_mapping:
