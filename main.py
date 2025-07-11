@@ -109,40 +109,40 @@ class Bot(BaseBot):
     # Kıyafet değiştir
         if message.startswith("degistir"):
             hair_active_palette = random.randint(0, 82)
-        skin_active_palette = random.randint(0, 88)
-        eye_active_palette = random.randint(0, 49)
-        lip_active_palette = random.randint(0, 58)
+            skin_active_palette = random.randint(0, 88)
+            eye_active_palette = random.randint(0, 49)
+            lip_active_palette = random.randint(0, 58)
 
-        outfit = [
-            Item(type='clothing', amount=1, id='body-flesh', account_bound=False, active_palette=skin_active_palette),
-            Item(type='clothing', amount=1, id=random.choice(item_shirt), account_bound=False, active_palette=-1),
-            Item(type='clothing', amount=1, id=random.choice(item_bottom), account_bound=False, active_palette=-1),
-            Item(type='clothing', amount=1, id=random.choice(item_accessory), account_bound=False, active_palette=-1),
-            Item(type='clothing', amount=1, id=random.choice(item_shoes), account_bound=False, active_palette=-1),
-            Item(type='clothing', amount=1, id=random.choice(item_freckle), account_bound=False, active_palette=-1),
-            Item(type='clothing', amount=1, id=random.choice(item_eye), account_bound=False, active_palette=eye_active_palette),
-            Item(type='clothing', amount=1, id=random.choice(item_mouth), account_bound=False, active_palette=lip_active_palette),
-            Item(type='clothing', amount=1, id=random.choice(item_nose), account_bound=False, active_palette=-1),
-            Item(type='clothing', amount=1, id=random.choice(item_hairback), account_bound=False, active_palette=hair_active_palette),
-            Item(type='clothing', amount=1, id=random.choice(item_hairfront), account_bound=False, active_palette=hair_active_palette),
-            Item(type='clothing', amount=1, id=random.choice(item_eyebrow), account_bound=False, active_palette=hair_active_palette)
-        ]
-        await self.highrise.set_outfit(outfit=outfit)
-        return
+            outfit = [
+                Item(type='clothing', amount=1, id='body-flesh', account_bound=False, active_palette=skin_active_palette),
+                Item(type='clothing', amount=1, id=random.choice(item_shirt), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_bottom), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_accessory), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_shoes), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_freckle), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_eye), account_bound=False, active_palette=eye_active_palette),
+                Item(type='clothing', amount=1, id=random.choice(item_mouth), account_bound=False, active_palette=lip_active_palette),
+                Item(type='clothing', amount=1, id=random.choice(item_nose), account_bound=False, active_palette=-1),
+                Item(type='clothing', amount=1, id=random.choice(item_hairback), account_bound=False, active_palette=hair_active_palette),
+                Item(type='clothing', amount=1, id=random.choice(item_hairfront), account_bound=False, active_palette=hair_active_palette),
+                Item(type='clothing', amount=1, id=random.choice(item_eyebrow), account_bound=False, active_palette=hair_active_palette)
+            ]
+            await self.highrise.set_outfit(outfit=outfit)
+            return
 
-    # Bot kendini kullanıcıya ışınlar
+        # Bot kendini kullanıcıya ışınlar
         if message == "!bot" and await self.is_user_allowed(user):
-        try:
-            room_users = await self.highrise.get_room_users()
-            for u, pos in room_users.content:
-                if u.id == user.id:
-                    await self.highrise.teleport(self.user_id, pos)
-                    break
-        except Exception as e:
-            print(f"Bot teleport hatası: {e}")
-        return
+            try:
+                room_users = await self.highrise.get_room_users()
+                for u, pos in room_users.content:
+                    if u.id == user.id:
+                        await self.highrise.teleport(self.user_id, pos)
+                        break
+            except Exception as e:
+                print(f"Bot teleport hatası: {e}")
+            return
 
-    # Hazır konumlar
+        # Hazır konumlar
         ready_locations = {
             "heykel": Position(10, 10, 8),
             "k1": Position(10, 0, 18),
@@ -151,49 +151,49 @@ class Bot(BaseBot):
         }
 
         if message in ready_locations:
-        try:
-            await self.highrise.teleport(user.id, ready_locations[message])
-        except Exception as e:
-            print(f"Teleport hatası: {e}")
-        return
+            try:
+                await self.highrise.teleport(user.id, ready_locations[message])
+            except Exception as e:
+                print(f"Teleport hatası: {e}")
+            return
 
-    # Yetkili kullanıcı komutları
+        # Yetkili kullanıcı komutları
         if await self.is_user_allowed(user):
 
         if message.startswith("!tp "):
-            parts = message.split()
-            if len(parts) >= 2:
-                target_username = parts[1].lstrip("@")
-                target_location = parts[2] if len(parts) > 2 else None
+                parts = message.split()
+                if len(parts) >= 2:
+                    target_username = parts[1].lstrip("@")
+                    target_location = parts[2] if len(parts) > 2 else None
 
+                    room_users = await self.highrise.get_users()
+                    target_user = next((u for u in room_users.content if u.username.lower() == target_username.lower()), None)
+
+                    if not target_user:
+                        await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
+                    elif target_location and target_location in ready_locations:
+                        await self.highrise.teleport(target_user.id, ready_locations[target_location])
+                        await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
+                        await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
+                    else:
+                        await self.highrise.teleport(user.id, AnchorPosition("Avatar", target_user.id))
+                        await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
+                else:
+                    await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanici [konum]")
+                return
+
+        elif message.startswith("!gel "):
+                target_username = message[5:].strip().lstrip("@")
                 room_users = await self.highrise.get_users()
                 target_user = next((u for u in room_users.content if u.username.lower() == target_username.lower()), None)
 
-                if not target_user:
-                    await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
-                elif target_location and target_location in ready_locations:
-                    await self.highrise.teleport(target_user.id, ready_locations[target_location])
-                    await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
-                    await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
+                if target_user:
+                    await self.highrise.teleport(target_user.id, AnchorPosition("Avatar", user.id))
+                    await self.highrise.send_whisper(user.id, f"✅ {target_username} yanına ışınlandı.")
+                    await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni yanına ışınladı.")
                 else:
-                    await self.highrise.teleport(user.id, AnchorPosition("Avatar", target_user.id))
-                    await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
-            else:
-                await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanici [konum]")
-            return
-
-        elif message.startswith("!gel "):
-            target_username = message[5:].strip().lstrip("@")
-            room_users = await self.highrise.get_users()
-            target_user = next((u for u in room_users.content if u.username.lower() == target_username.lower()), None)
-
-            if target_user:
-                await self.highrise.teleport(target_user.id, AnchorPosition("Avatar", user.id))
-                await self.highrise.send_whisper(user.id, f"✅ {target_username} yanına ışınlandı.")
-                await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni yanına ışınladı.")
-            else:
-                await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
-            return
+                    await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
+                return
 
         elif message.startswith("!goto "):
             loc = message[6:].strip().lower()
