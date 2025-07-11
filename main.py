@@ -90,93 +90,127 @@ class Bot(BaseBot):
         await self.highrise.chat(farewell_message)
 
     async def on_chat(self, user: User, message: str) -> None:
-        message = message.strip().lower()
+    message = message.strip().lower()
 
-        # Eğer emote adı geçerliyse, önceki emote durdurulup yenisi başlatılır
-        if message in emote_mapping:
-            await self.start_emote_loop(user.id, message)
+    # Emote başlat / durdur
+    if message in emote_mapping:
+        await self.start_emote_loop(user.id, message)
+    elif message == "stop":
+        await self.stop_emote_loop(user.id)
 
-        # Eğer mesaj "stop" ise, emote döngüsünü durdur
-        if message == "stop":
-            await self.stop_emote_loop(user.id)
+    # Emote komutu
+    elif message.startswith("!botrest"):
+        await self.highrise.send_emote("sit-idle-cute")
 
-        if message.lower().startswith("!botrest"):
-            await self.highrise.send_emote("sit-idle-cute")
-        if message.lower().startswith("degistir"):
-            hair_active_palette = random.randint(0, 82)
-            skin_active_palette = random.randint(0, 88)
-            eye_active_palette = random.randint(0, 49)
-            lip_active_palette = random.randint(0, 58)
+    # Kıyafet değiştir
+    elif message.startswith("degistir"):
+        hair_active_palette = random.randint(0, 82)
+        skin_active_palette = random.randint(0, 88)
+        eye_active_palette = random.randint(0, 49)
+        lip_active_palette = random.randint(0, 58)
 
-            outfit = [
-                Item(type='clothing', amount=1, id='body-flesh', account_bound=False, active_palette=skin_active_palette),
-                Item(type='clothing', amount=1, id=random.choice(item_shirt), account_bound=False, active_palette=-1),
-                Item(type='clothing', amount=1, id=random.choice(item_bottom), account_bound=False, active_palette=-1),
-                Item(type='clothing', amount=1, id=random.choice(item_accessory), account_bound=False, active_palette=-1),
-                Item(type='clothing', amount=1, id=random.choice(item_shoes), account_bound=False, active_palette=-1),
-                Item(type='clothing', amount=1, id=random.choice(item_freckle), account_bound=False, active_palette=-1),
-                Item(type='clothing', amount=1, id=random.choice(item_eye), account_bound=False, active_palette=eye_active_palette),
-                Item(type='clothing', amount=1, id=random.choice(item_mouth), account_bound=False, active_palette=lip_active_palette),
-                Item(type='clothing', amount=1, id=random.choice(item_nose), account_bound=False, active_palette=-1),
-                Item(type='clothing', amount=1, id=random.choice(item_hairback), account_bound=False, active_palette=hair_active_palette),
-                Item(type='clothing', amount=1, id=random.choice(item_hairfront), account_bound=False, active_palette=hair_active_palette),
-                Item(type='clothing', amount=1, id=random.choice(item_eyebrow), account_bound=False, active_palette=hair_active_palette)
-            ]
+        outfit = [
+            Item(type='clothing', amount=1, id='body-flesh', account_bound=False, active_palette=skin_active_palette),
+            Item(type='clothing', amount=1, id=random.choice(item_shirt), account_bound=False, active_palette=-1),
+            Item(type='clothing', amount=1, id=random.choice(item_bottom), account_bound=False, active_palette=-1),
+            Item(type='clothing', amount=1, id=random.choice(item_accessory), account_bound=False, active_palette=-1),
+            Item(type='clothing', amount=1, id=random.choice(item_shoes), account_bound=False, active_palette=-1),
+            Item(type='clothing', amount=1, id=random.choice(item_freckle), account_bound=False, active_palette=-1),
+            Item(type='clothing', amount=1, id=random.choice(item_eye), account_bound=False, active_palette=eye_active_palette),
+            Item(type='clothing', amount=1, id=random.choice(item_mouth), account_bound=False, active_palette=lip_active_palette),
+            Item(type='clothing', amount=1, id=random.choice(item_nose), account_bound=False, active_palette=-1),
+            Item(type='clothing', amount=1, id=random.choice(item_hairback), account_bound=False, active_palette=hair_active_palette),
+            Item(type='clothing', amount=1, id=random.choice(item_hairfront), account_bound=False, active_palette=hair_active_palette),
+            Item(type='clothing', amount=1, id=random.choice(item_eyebrow), account_bound=False, active_palette=hair_active_palette)
+        ]
+        await self.highrise.set_outfit(outfit=outfit)
 
-            await self.highrise.set_outfit(outfit=outfit)
-        if message == "!bot" and await self.is_user_allowed(user):
-            try:
-                room_users = await self.highrise.get_room_users()
-                for u, pos in room_users.content:
-                    if u.id == user.id:
-                        await self.highrise.teleport(self.user_id, pos)
-                        break
-            except Exception as e:
-                print(f"Bot teleport hatası: {e}")
-        teleport_locations = {
-            "k1": Position(10, 0, 18),
-            "k2": Position(15, 4.75, 12),
-            "heykel": Position(10, 10, 8),  # İstediğin koordinatları buraya yazabilirsin
-        }
+    # Bot kendini kullanıcıya ışınlar
+    elif message == "!bot" and await self.is_user_allowed(user):
+        try:
+            room_users = await self.highrise.get_room_users()
+            for u, pos in room_users.content:
+                if u.id == user.id:
+                    await self.highrise.teleport(self.user_id, pos)
+                    break
+        except Exception as e:
+            print(f"Bot teleport hatası: {e}")
 
-        if message in teleport_locations:
-            try:
-                await self.highrise.teleport(user.id, teleport_locations[message])
-            except Exception as e:
-                print(f"Teleport hatası: {e}")
-                        # Moderation commands
-        if not await self.is_user_allowed(user):
-            pass
-        else:
-            if message.startswith("!kick "):
-                target_name = message[6:].strip()
-                await self.kick_user(target_name, user)
-            elif message.startswith("!mute "):
-                target_name = message[6:].strip()
-                await self.mute_user(target_name, user)
-            elif message.startswith("!unmute "):
-                target_name = message[8:].strip()
-                await self.unmute_user(target_name, user)
-            elif message.startswith("!ban "):
-                target_name = message[5:].strip()
-                await self.ban_user(target_name, user)
-            elif message.startswith("!unban "):
-                target_name = message[7:].strip()
-                await self.unban_user(target_name, user)
-            elif message.startswith("!promote "):
-                target_name = message[9:].strip()
-                await self.promote_user(target_name, user)
-            elif message.startswith("!demote "):
-                target_name = message[8:].strip()
-                await self.demote_user(target_name, user)
-            elif message.startswith("!announce "):
-                ann_msg = message[10:].strip()
-                await self.announce_message(ann_msg, user)
-            elif message == "!listbans":
-                await self.list_bans(user)
-            elif message.startswith("!teleport "):
-                target_name = message[10:].strip()
-                await self.teleport_to_user(user, target_name)
+    # Hazır konumlara ışınlan
+    teleport_locations = {
+        "k1": Position(10, 0, 18),
+        "k2": Position(15, 4.75, 12),
+        "heykel": Position(10, 10, 8),
+    }
+    if message in teleport_locations:
+        try:
+            await self.highrise.teleport(user.id, teleport_locations[message])
+        except Exception as e:
+            print(f"Teleport hatası: {e}")
+
+    # MODERATÖR KOMUTLARI (Admin kontrolü gerekli)
+    elif await self.is_user_allowed(user):
+
+        # Işınlanma
+        if message.startswith("!tp "):
+            target_username = message[4:].strip().lstrip("@")
+            room_users = await self.highrise.get_users()
+            target_user = next((u for u in room_users.content if u.username.lower() == target_username.lower()), None)
+
+            if target_user:
+                await self.highrise.teleport(user.id, AnchorPosition("Avatar", target_user.id))
+                await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
+            else:
+                await self.highrise.send_whisper(user.id, f"❌ {target_username} odada yok.")
+
+        elif message.startswith("!gel "):
+            target_username = message[5:].strip().lstrip("@")
+            room_users = await self.highrise.get_users()
+            target_user = next((u for u in room_users.content if u.username.lower() == target_username.lower()), None)
+
+            if target_user:
+                await self.highrise.teleport(target_user.id, AnchorPosition("Avatar", user.id))
+                await self.highrise.send_whisper(user.id, f"✅ {target_username} yanına ışınlandı.")
+                await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni yanına ışınladı.")
+            else:
+                await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
+
+        # Moderatör komutları
+        elif message.startswith("!kick "):
+            await self.kick_user(message[6:].strip(), user)
+        elif message.startswith("!ban "):
+            await self.ban_user(message[5:].strip(), user)
+        elif message.startswith("!unban "):
+            await self.unban_user(message[7:].strip(), user)
+        elif message.startswith("!mute "):
+            await self.mute_user(message[6:].strip(), user)
+        elif message.startswith("!unmute "):
+            await self.unmute_user(message[8:].strip(), user)
+        elif message.startswith("!promote "):
+            await self.promote_user(message[9:].strip(), user)
+        elif message.startswith("!demote "):
+            await self.demote_user(message[8:].strip(), user)
+        elif message.startswith("!announce "):
+            await self.announce_message(message[10:].strip(), user)
+        elif message == "!listbans":
+            await self.list_bans(user)
+
+        elif message == "-helpmod":
+            help_text = (
+                "🔒 **Moderatör Komutları:**\n\n"
+                "🧍‍♂️ `!tp @kullanici` → Belirttiğin kullanıcıya ışınlanırsın.\n"
+                "📍 `!gel @kullanici` → Kullanıcıyı yanına ışınlarsın.\n"
+                "🚫 `!ban @kullanici` → Kullanıcıyı banlar.\n"
+                "🔓 `!unban @kullanici` → Ban kaldırır.\n"
+                "🔇 `!mute @kullanici` → Susturur.\n"
+                "🔊 `!unmute @kullanici` → Susturmayı kaldırır.\n"
+                "💨 `!kick @kullanici` → Odan atar.\n"
+                "⬆️ `!promote @kullanici` → Mod yapar.\n"
+                "⬇️ `!demote @kullanici` → Modluğunu alır.\n"
+                "📣 `!announce mesaj` → Odaya mesaj.\n"
+                "📋 `!listbans` → Banlıları listeler."
+            )
+            await self.highrise.send_whisper(user.id, help_text)
 
     async def kick_user(self, target_username: str, requester: User):
         room_users = (await self.highrise.get_room_users()).content
