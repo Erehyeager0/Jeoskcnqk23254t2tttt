@@ -59,7 +59,7 @@ class Bot(BaseBot):
         self.user_positions = {} 
         self.position_tasks = {} 
 
-    haricler = ["","","Carterers","","","",","] 
+    haricler = ["","","","","","",","] 
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emote gönderdi: {emote_id}")
@@ -144,10 +144,10 @@ class Bot(BaseBot):
 
         # Hazır konumlar
         ready_locations = {
-            "heykel": Position(10, 10, 8),
+            "agaç": Position(10, 10, 8),
             "k1": Position(10, 0, 18),
-            "k2": Position(15, 4.75, 12),
-            "sahne": Position(0, 5, 0),
+            "k2": Position(15, 10, 25),
+            "babauçuyor": Position(10, 10, 18),
         }
 
         if message in ready_locations:
@@ -288,7 +288,19 @@ class Bot(BaseBot):
             )
             await self.highrise.send_whisper(user.id, help_text)
             return
-
+        if await self.is_user_allowed(user):
+    if message.startswith("!tp "):
+        ...
+    elif message.startswith("!gel "):
+        ...
+    elif message == "-helpmod":
+        ...
+    elif message.startswith("!ban "):
+        ...
+    elif message.startswith("!kick "):
+        ...
+    elif message.startswith("!say "):
+        ...
     # Yetkisiz kullanıcı komut denediğinde uyar
         restricted_cmds = [
             "!tp", "!gel", "!kick", "!ban", "!unban", "!mute", "!unmute",
