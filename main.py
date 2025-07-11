@@ -34,14 +34,14 @@ for emote_data in emote_list:
     # Use first alias as the main key
     main_key = aliases[0].lower()
     emote_info = {"value": emote_id, "time": duration}
-    
+
     # Add all aliases to emote_mapping
     for alias in aliases:
         emote_mapping[alias.lower()] = emote_info
-    
+
     # Add to secili_emote (appears to be used for random selection)
     secili_emote[main_key] = emote_info
-    
+
     # Add to paid_emotes as well
     paid_emotes[main_key] = emote_info
 
@@ -165,8 +165,8 @@ class Bot(BaseBot):
                     target_username = parts[1].lstrip("@")
                     target_location = parts[2] if len(parts) > 2 else None
 
-                    room_users = await self.highrise.get_users()
-                    target_user = next((u for u in room_users.content if u.username.lower() == target_username.lower()), None)
+                    room_users = await self.highrise.get_room_users()
+                    target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
 
                     if not target_user:
                         await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
@@ -183,8 +183,8 @@ class Bot(BaseBot):
 
         elif message.startswith("!gel "):
                 target_username = message[5:].strip().lstrip("@")
-                room_users = await self.highrise.get_users()
-                target_user = next((u for u in room_users.content if u.username.lower() == target_username.lower()), None)
+                room_users = await self.highrise.get_room_users()
+                target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
 
                 if target_user:
                     await self.highrise.teleport(target_user.id, AnchorPosition("Avatar", user.id))
@@ -206,8 +206,8 @@ class Bot(BaseBot):
         elif message.startswith("!bringall "):
             loc = message[10:].strip().lower()
             if loc in ready_locations:
-                room_users = await self.highrise.get_users()
-                for u in room_users.content:
+                room_users = await self.highrise.get_room_users()
+                for u, _ in room_users.content:
                     try:
                         await self.highrise.teleport(u.id, ready_locations[loc])
                     except Exception:
@@ -1038,7 +1038,7 @@ class RunBot():
                 # Create a new event loop for each iteration
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
-                
+
                 try:
                     loop.run_until_complete(main(self.definitions))
                 finally:
@@ -1048,16 +1048,16 @@ class RunBot():
                         pending = asyncio.all_tasks(loop)
                         for task in pending:
                             task.cancel()
-                        
+
                         # Wait for all tasks to complete cancellation
                         if pending:
                             loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
                     except:
                         pass
-                    
+
                     # Close the loop
                     loop.close()
-                    
+
             except Exception as e:
                 import traceback
                 print("Bir hata yakalandı:")
@@ -1068,7 +1068,7 @@ class RunBot():
 if __name__ == "__main__":
   import signal
   import sys
-  
+
   # Start web server
   WebServer().keep_alive()
 
@@ -1096,7 +1096,7 @@ if __name__ == "__main__":
   bot_thread = Thread(target=start_bot)
   bot_thread.daemon = True
   bot_thread.start()
-  
+
   # Keep the main thread alive
   try:
     bot_thread.join()
