@@ -267,7 +267,7 @@ class Bot(BaseBot):
             await self.list_bans(user)
             return
 
-        elif message == "-helpmod":
+        elif message == "!helpmod":
             help_text = (
                 "🔒 **Moderatör Komutları:**\n\n"
                 "🧍‍♂️ `!tp @kullanici` → Belirttiğin kullanıcıya ışınlanırsın.\n"
@@ -293,7 +293,7 @@ class Bot(BaseBot):
         ...
     elif message.startswith("!gel "):
         ...
-    elif message == "-helpmod":
+    elif message == "!helpmod":
         ...
     elif message.startswith("!ban "):
         ...
