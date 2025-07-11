@@ -266,17 +266,17 @@ class Bot(BaseBot):
                 return
 
             elif message in ["-helpmod", "!helpmod"]:
-    await self.highrise.send_whisper(user.id,
-        "🔒 **Moderatör Komutları:**\n"
-        "🧍‍♂️ `!tp @kullanici` → Belirttiğin kullanıcıya ışınlanırsın.\n"
-        "📍 `!tp @kullanici konum` → Kullanıcıyı hazır konuma ışınlarsın.\n"
-        "📥 `!gel @kullanici` → Kullanıcıyı yanına ışınlarsın.\n"
-        "Carterers'in selamı var 🌚")
+                await self.highrise.send_whisper(user.id,
+                    "🔒 **Moderatör Komutları:**\n"
+                    "🧍‍♂️ `!tp @kullanici` → Belirttiğin kullanıcıya ışınlanırsın.\n"
+                    "📍 `!tp @kullanici konum` → Kullanıcıyı hazır konuma ışınlarsın.\n"
+                    "📥 `!gel @kullanici` → Kullanıcıyı yanına ışınlarsın.\n"
+                    "Carterers'in selamı var 🌚")
 
-    await self.highrise.send_whisper(user.id,
-        "🧲 `!bringall konum` → Herkesi belirli bir konuma ışınlarsın.\n"
-        "🗣️ `!say mesaj` → Bot ile odaya mesaj gönder.\n"
-        "Carterers'in selamı var 🌚")
+                await self.highrise.send_whisper(user.id,
+                    "🧲 `!bringall konum` → Herkesi belirli bir konuma ışınlarsın.\n"
+                    "🗣️ `!say mesaj` → Bot ile odaya mesaj gönder.\n"
+                    "Carterers'in selamı var 🌚")
                 return
 
         # Yetkisiz kullanıcı komut denediğinde uyar
