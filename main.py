@@ -90,21 +90,25 @@ class Bot(BaseBot):
         await self.highrise.chat(farewell_message)
 
     async def on_chat(self, user: User, message: str) -> None:
-        message = message.strip().lower()
+    message = message.strip().lower()
 
-        # Emote başlat / durdur
-        if message in emote_mapping:
-            await self.start_emote_loop(user.id, message)
-        elif message == "stop":
-            await self.stop_emote_loop(user.id)
+    # Emote başlat / durdur
+    if message in emote_mapping:
+        await self.start_emote_loop(user.id, message)
+        return
+
+    if message == "stop":
+        await self.stop_emote_loop(user.id)
+        return
 
     # Emote komutu
-        elif message.startswith("!botrest"):
-            await self.highrise.send_emote("sit-idle-cute")
+    if message.startswith("!botrest"):
+        await self.highrise.send_emote("sit-idle-cute")
+        return
 
-        # Kıyafet değiştir
-        elif message.startswith("degistir"):
-            hair_active_palette = random.randint(0, 82)
+    # Kıyafet değiştir
+    if message.startswith("degistir"):
+        hair_active_palette = random.randint(0, 82)
         skin_active_palette = random.randint(0, 88)
         eye_active_palette = random.randint(0, 49)
         lip_active_palette = random.randint(0, 58)
@@ -124,44 +128,58 @@ class Bot(BaseBot):
             Item(type='clothing', amount=1, id=random.choice(item_eyebrow), account_bound=False, active_palette=hair_active_palette)
         ]
         await self.highrise.set_outfit(outfit=outfit)
+        return
 
-        # Bot kendini kullanıcıya ışınlar
-        elif message == "!bot" and await self.is_user_allowed(user):
-            try:
-                room_users = await self.highrise.get_room_users()
-                for u, pos in room_users.content:
-                    if u.id == user.id:
-                        await self.highrise.teleport(self.user_id, pos)
-                        break
-            except Exception as e:
-                print(f"Bot teleport hatası: {e}")
+    # Bot kendini kullanıcıya ışınlar
+    if message == "!bot" and await self.is_user_allowed(user):
+        try:
+            room_users = await self.highrise.get_room_users()
+            for u, pos in room_users.content:
+                if u.id == user.id:
+                    await self.highrise.teleport(self.user_id, pos)
+                    break
+        except Exception as e:
+            print(f"Bot teleport hatası: {e}")
+        return
 
-        # Hazır konumlara ışınlan
-        teleport_locations = {
+    # Hazır konumlar
+    ready_locations = {
+        "heykel": Position(10, 10, 8),
         "k1": Position(10, 0, 18),
         "k2": Position(15, 4.75, 12),
-        "heykel": Position(10, 10, 8),
+        "sahne": Position(0, 5, 0),
     }
-    if message in teleport_locations:
+
+    if message in ready_locations:
         try:
-            await self.highrise.teleport(user.id, teleport_locations[message])
+            await self.highrise.teleport(user.id, ready_locations[message])
         except Exception as e:
             print(f"Teleport hatası: {e}")
+        return
 
-    # MODERATÖR KOMUTLARI (Admin kontrolü gerekli)
-    elif await self.is_user_allowed(user):
+    # Yetkili kullanıcı komutları
+    if await self.is_user_allowed(user):
 
-        # Işınlanma
         if message.startswith("!tp "):
-            target_username = message[4:].strip().lstrip("@")
-            room_users = await self.highrise.get_users()
-            target_user = next((u for u in room_users.content if u.username.lower() == target_username.lower()), None)
+            parts = message.split()
+            if len(parts) >= 2:
+                target_username = parts[1].lstrip("@")
+                target_location = parts[2] if len(parts) > 2 else None
 
-            if target_user:
-                await self.highrise.teleport(user.id, AnchorPosition("Avatar", target_user.id))
-                await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
+                room_users = await self.highrise.get_users()
+                target_user = next((u for u in room_users.content if u.username.lower() == target_username.lower()), None)
+
+                if not target_user:
+                    await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
+                elif target_location and target_location in ready_locations:
+                    await self.highrise.teleport(target_user.id, ready_locations[target_location])
+                    await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
+                    await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
+                else:
+                    await self.highrise.teleport(user.id, AnchorPosition("Avatar", target_user.id))
+                    await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
             else:
-                await self.highrise.send_whisper(user.id, f"❌ {target_username} odada yok.")
+                await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanici [konum]")
 
         elif message.startswith("!gel "):
             target_username = message[5:].strip().lstrip("@")
@@ -175,7 +193,34 @@ class Bot(BaseBot):
             else:
                 await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
 
-        # Moderatör komutları
+        elif message.startswith("!goto "):
+            loc = message[6:].strip().lower()
+            if loc in ready_locations:
+                await self.highrise.teleport(user.id, ready_locations[loc])
+                await self.highrise.send_whisper(user.id, f"✅ '{loc}' konumuna ışınlandın.")
+            else:
+                await self.highrise.send_whisper(user.id, f"❌ '{loc}' konumu bulunamadı.")
+
+        elif message.startswith("!bringall "):
+            loc = message[10:].strip().lower()
+            if loc in ready_locations:
+                room_users = await self.highrise.get_users()
+                for u in room_users.content:
+                    try:
+                        await self.highrise.teleport(u.id, ready_locations[loc])
+                    except Exception:
+                        pass
+                await self.highrise.send_whisper(user.id, f"✅ Tüm kullanıcılar '{loc}' konumuna taşındı.")
+            else:
+                await self.highrise.send_whisper(user.id, f"❌ '{loc}' konumu bulunamadı.")
+
+        elif message.startswith("!say "):
+            text = message[5:].strip()
+            if text:
+                await self.highrise.chat(text)
+            else:
+                await self.highrise.send_whisper(user.id, "⚠️ Boş mesaj gönderilemez.")
+
         elif message.startswith("!kick "):
             await self.kick_user(message[6:].strip(), user)
         elif message.startswith("!ban "):
@@ -194,12 +239,15 @@ class Bot(BaseBot):
             await self.announce_message(message[10:].strip(), user)
         elif message == "!listbans":
             await self.list_bans(user)
-
         elif message == "-helpmod":
             help_text = (
                 "🔒 **Moderatör Komutları:**\n\n"
                 "🧍‍♂️ `!tp @kullanici` → Belirttiğin kullanıcıya ışınlanırsın.\n"
-                "📍 `!gel @kullanici` → Kullanıcıyı yanına ışınlarsın.\n"
+                "📍 `!tp @kullanici konum` → Kullanıcıyı hazır konuma ışınlarsın.\n"
+                "📥 `!gel @kullanici` → Kullanıcıyı yanına ışınlarsın.\n"
+                "🧭 `!goto konum` → Kendini hazır konuma ışınlarsın.\n"
+                "🧲 `!bringall konum` → Herkesi belirli bir konuma ışınlarsın.\n"
+                "🗣️ `!say mesaj` → Bot ile odaya mesaj gönder.\n"
                 "🚫 `!ban @kullanici` → Kullanıcıyı banlar.\n"
                 "🔓 `!unban @kullanici` → Ban kaldırır.\n"
                 "🔇 `!mute @kullanici` → Susturur.\n"
@@ -211,6 +259,14 @@ class Bot(BaseBot):
                 "📋 `!listbans` → Banlıları listeler."
             )
             await self.highrise.send_whisper(user.id, help_text)
+        return
+
+    # Yetkili değilse ama komut deniyorsa uyar
+    elif any(message.startswith(cmd) for cmd in [
+        "!tp", "!gel", "!kick", "!ban", "!unban", "!mute", "!unmute",
+        "!promote", "!demote", "!announce", "!say", "!bringall", "!goto", "!listbans"
+    ]):
+        await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
     async def kick_user(self, target_username: str, requester: User):
         room_users = (await self.highrise.get_room_users()).content
