@@ -92,22 +92,22 @@ class Bot(BaseBot):
     async def on_chat(self, user: User, message: str) -> None:
         message = message.strip().lower()
 
-    # Emote başlat / durdur
-    if message in emote_mapping:
-        await self.start_emote_loop(user.id, message)
-        return
+        # Emote başlat / durdur
+        if message in emote_mapping:
+            await self.start_emote_loop(user.id, message)
+            return
 
-    if message == "stop":
-        await self.stop_emote_loop(user.id)
-        return
+        if message == "stop":
+            await self.stop_emote_loop(user.id)
+            return
 
-    # Emote komutu
-    if message.startswith("!botrest"):
-        await self.highrise.send_emote("sit-idle-cute")
-        return
+        # Emote komutu
+        if message.startswith("!botrest"):
+            await self.highrise.send_emote("sit-idle-cute")
+            return
 
     # Kıyafet değiştir
-    if message.startswith("degistir"):
+        if message.startswith("degistir"):
         hair_active_palette = random.randint(0, 82)
         skin_active_palette = random.randint(0, 88)
         eye_active_palette = random.randint(0, 49)
@@ -131,7 +131,7 @@ class Bot(BaseBot):
         return
 
     # Bot kendini kullanıcıya ışınlar
-    if message == "!bot" and await self.is_user_allowed(user):
+        if message == "!bot" and await self.is_user_allowed(user):
         try:
             room_users = await self.highrise.get_room_users()
             for u, pos in room_users.content:
@@ -143,14 +143,14 @@ class Bot(BaseBot):
         return
 
     # Hazır konumlar
-    ready_locations = {
-        "heykel": Position(10, 10, 8),
-        "k1": Position(10, 0, 18),
-        "k2": Position(15, 4.75, 12),
-        "sahne": Position(0, 5, 0),
-    }
+        ready_locations = {
+            "heykel": Position(10, 10, 8),
+            "k1": Position(10, 0, 18),
+            "k2": Position(15, 4.75, 12),
+            "sahne": Position(0, 5, 0),
+        }
 
-    if message in ready_locations:
+        if message in ready_locations:
         try:
             await self.highrise.teleport(user.id, ready_locations[message])
         except Exception as e:
@@ -158,7 +158,7 @@ class Bot(BaseBot):
         return
 
     # Yetkili kullanıcı komutları
-    if await self.is_user_allowed(user):
+        if await self.is_user_allowed(user):
 
         if message.startswith("!tp "):
             parts = message.split()
@@ -285,12 +285,12 @@ class Bot(BaseBot):
             return
 
     # Yetkisiz kullanıcı komut denediğinde uyar
-    restricted_cmds = [
-        "!tp", "!gel", "!kick", "!ban", "!unban", "!mute", "!unmute",
-        "!promote", "!demote", "!announce", "!say", "!bringall", "!goto", "!listbans"
-    ]
-    if any(message.startswith(cmd) for cmd in restricted_cmds):
-        await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
+        restricted_cmds = [
+            "!tp", "!gel", "!kick", "!ban", "!unban", "!mute", "!unmute",
+            "!promote", "!demote", "!announce", "!say", "!bringall", "!goto", "!listbans"
+        ]
+        if any(message.startswith(cmd) for cmd in restricted_cmds):
+            await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
     async def kick_user(self, target_username: str, requester: User):
         room_users = (await self.highrise.get_room_users()).content
