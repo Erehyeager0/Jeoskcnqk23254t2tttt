@@ -104,7 +104,7 @@ class Bot(BaseBot):
 
         # Kıyafet değiştir
         elif message.startswith("degistir"):
-        hair_active_palette = random.randint(0, 82)
+            hair_active_palette = random.randint(0, 82)
         skin_active_palette = random.randint(0, 88)
         eye_active_palette = random.randint(0, 49)
         lip_active_palette = random.randint(0, 58)
