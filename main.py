@@ -208,18 +208,39 @@ class Bot(BaseBot):
                 return
 
             elif message.startswith("!bringall "):
-                loc = message[10:].strip().lower()
-                if loc in ready_locations:
-                    room_users = await self.highrise.get_room_users()
-                    for u, _ in room_users.content:
-                        try:
-                            await self.highrise.teleport(u.id, ready_locations[loc])
-                        except Exception:
-                            pass
-                    await self.highrise.send_whisper(user.id, f"✅ Tüm kullanıcılar '{loc}' konumuna taşındı.")
-                else:
-                    await self.highrise.send_whisper(user.id, f"❌ '{loc}' konumu bulunamadı.")
-                return
+    hedef = message[10:].strip().lower()
+
+    # Eğer hedef hazır konumsa
+    if hedef in ready_locations:
+        room_users = await self.highrise.get_room_users()
+        for u, _ in room_users.content:
+            if u.id != self.user_id:  # Bot kendini ışınlamasın
+                try:
+                    await self.highrise.teleport(u.id, ready_locations[hedef])
+                except Exception:
+                    pass
+        await self.highrise.send_whisper(user.id, f"✅ Tüm kullanıcılar '{hedef}' konumuna taşındı.")
+
+    else:
+        # Kullanıcıya ışınlama modu
+        target_user = None
+        room_users = await self.highrise.get_room_users()
+        for u, pos in room_users.content:
+            if u.username.lower() == hedef and u.id != self.user_id:
+                target_user = (u, pos)
+                break
+
+        if target_user:
+            for u, _ in room_users.content:
+                if u.id != self.user_id and u.id != target_user[0].id:
+                    try:
+                        await self.highrise.teleport(u.id, target_user[1])
+                    except Exception:
+                        pass
+            await self.highrise.send_whisper(user.id, f"✅ Tüm kullanıcılar {target_user[0].username} kullanıcısının yanına taşındı.")
+        else:
+            await self.highrise.send_whisper(user.id, f"❌ '{hedef}' konumu veya kullanıcı bulunamadı.")
+    return
 
             elif message.startswith("!say "):
                 text = message[5:].strip()
@@ -275,6 +296,7 @@ class Bot(BaseBot):
 
                 await self.highrise.send_whisper(user.id,
                     "🧲 `!bringall konum` → Herkesi belirli bir konuma ışınlarsın.\n"
+                                                 "🤖 `!bot` → Bot kendini yanına ışınlar.\n"
                     "🗣️ `!say mesaj` → Bot ile odaya mesaj gönder.\n"
                     "Carterers'in selamı var 🌚")
                 return
