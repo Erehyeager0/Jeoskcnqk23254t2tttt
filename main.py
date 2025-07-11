@@ -92,18 +92,18 @@ class Bot(BaseBot):
     async def on_chat(self, user: User, message: str) -> None:
         message = message.strip().lower()
 
-    # Emote başlat / durdur
-    if message in emote_mapping:
-        await self.start_emote_loop(user.id, message)
-    elif message == "stop":
-        await self.stop_emote_loop(user.id)
+        # Emote başlat / durdur
+        if message in emote_mapping:
+            await self.start_emote_loop(user.id, message)
+        elif message == "stop":
+            await self.stop_emote_loop(user.id)
 
     # Emote komutu
-    elif message.startswith("!botrest"):
-        await self.highrise.send_emote("sit-idle-cute")
+        elif message.startswith("!botrest"):
+            await self.highrise.send_emote("sit-idle-cute")
 
-    # Kıyafet değiştir
-    elif message.startswith("degistir"):
+        # Kıyafet değiştir
+        elif message.startswith("degistir"):
         hair_active_palette = random.randint(0, 82)
         skin_active_palette = random.randint(0, 88)
         eye_active_palette = random.randint(0, 49)
