@@ -184,7 +184,8 @@ class Bot(BaseBot):
                     await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanici [konum]")
                 return
 
-        elif message.startswith("!gel "):
+            elif
+message.startswith("!gel "):
                 target_username = message[5:].strip().lstrip("@")
                 room_users = await self.highrise.get_room_users()
                 target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
@@ -288,19 +289,6 @@ class Bot(BaseBot):
             )
             await self.highrise.send_whisper(user.id, help_text)
             return
-        if await self.is_user_allowed(user):
-            if message.startswith("!tp "):
-        ...
-    elif message.startswith("!gel "):
-        ...
-    elif message == "!helpmod":
-        ...
-    elif message.startswith("!ban "):
-        ...
-    elif message.startswith("!kick "):
-        ...
-    elif message.startswith("!say "):
-        ...
     # Yetkisiz kullanıcı komut denediğinde uyar
         restricted_cmds = [
             "!tp", "!gel", "!kick", "!ban", "!unban", "!mute", "!unmute",
