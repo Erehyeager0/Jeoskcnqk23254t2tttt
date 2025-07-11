@@ -184,8 +184,7 @@ class Bot(BaseBot):
                     await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanici [konum]")
                 return
 
-            elif
-message.startswith("!gel "):
+            elif message.startswith("!gel "):
                 target_username = message[5:].strip().lstrip("@")
                 room_users = await self.highrise.get_room_users()
                 target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
