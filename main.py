@@ -78,7 +78,7 @@ class Bot(BaseBot):
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
             emote_to_send = emote_info["value"]
-            await self.send_emote(emote_to_send, user.id)
+            await self.highrise.send_emote(emote_to_send, user.id)
         except Exception as e:
             print(f"Kullanıcıya emote gönderilirken hata oluştu {user.id}: {e}")
 
@@ -295,122 +295,7 @@ class Bot(BaseBot):
         if any(message.startswith(cmd) for cmd in restricted_cmds):
             await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
-        async def kick_user(self, target_username: str, requester: User):
-            room_users = (await self.highrise.get_room_users()).content
-            target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
-            if target_user:
-                await self.highrise.kick(target_user.id)
-                await self.highrise.send_whisper(requester.id, f"{target_username} odadan atıldı.")
-            else:
-                await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
-
-        async def mute_user(self, target_username: str, requester: User):
-            # Bu fonksiyonun içini API'ne göre doldurman gerekebilir.
-            # Örnek olarak sadece whisper ile bilgilendirme yapıyoruz.
-            await self.highrise.send_whisper(requester.id, f"{target_username} susturuldu (simülasyon).")
-
-        async def unmute_user(self, target_username: str, requester: User):
-            await self.highrise.send_whisper(requester.id, f"{target_username} susturma kaldırıldı (simülasyon).")
-
-        async def ban_user(self, target_username: str, requester: User):
-            room_users = (await self.highrise.get_room_users()).content
-            target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
-            if target_user:
-                await self.highrise.ban(target_user.id)
-                await self.highrise.send_whisper(requester.id, f"{target_username} banlandı.")
-            else:
-                await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
-
-        async def unban_user(self, target_username: str, requester: User):
-            # Highrise API'de ban kaldırma nasıl yapılıyorsa oraya göre implement et.
-            await self.highrise.send_whisper(requester.id, f"{target_username} ban kaldırıldı (simülasyon).")
-
-        async def promote_user(self, target_username: str, requester: User):
-            room_users = (await self.highrise.get_room_users()).content
-            target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
-            if target_user:
-                await self.highrise.set_room_privilege(target_user.id, moderator=True)
-                await self.highrise.send_whisper(requester.id, f"{target_username} moderatör yapıldı.")
-            else:
-                await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
-
-        async def demote_user(self, target_username: str, requester: User):
-            room_users = (await self.highrise.get_room_users()).content
-            target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
-            if target_user:
-                await self.highrise.set_room_privilege(target_user.id, moderator=False)
-                await self.highrise.send_whisper(requester.id, f"{target_username} moderatörlükten çıkarıldı.")
-            else:
-                await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
-
-        async def announce_message(self, message: str, requester: User):
-            await self.highrise.chat(f"** Duyuru: {message} **")
-
-        async def list_bans(self, requester: User):
-            bans = await self.highrise.get_bans()
-            if bans:
-                ban_list = "\n".join([ban.username for ban in bans])
-                await self.highrise.send_whisper(requester.id, f"Banlı kullanıcılar:\n{ban_list}")
-            else:
-                await self.highrise.send_whisper(requester.id, "Banlı kullanıcı yok.")
-
-        async def teleport_to_user_old(self, requester: User, target_username: str):
-            room_users = (await self.highrise.get_room_users()).content
-            target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
-            if target_user:
-                target_pos = next(pos for u, pos in room_users if u.id == target_user.id)
-                await self.highrise.teleport(requester.id, target_pos)
-                await self.highrise.send_whisper(requester.id, f"{target_username}'ya teleport oldunuz.")
-            else:
-                await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
-
-        async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
-        # Aynı kullanıcıda daha önce başlatılmış bir emote döngüsü varsa
-            if user_id in self.user_emote_tasks:
-                current_task = self.user_emote_tasks[user_id]
-                if not current_task.done():
-                    # Eğer aynı emote ise tekrar başlatma
-                    if getattr(current_task, "emote_name", None) == emote_name:
-                        return
-                    else:
-                        # Farklı emote ise önce task'i iptal et
-                        current_task.cancel()
-                        try:
-                            await current_task
-                        except asyncio.CancelledError:
-                            pass
-                self.user_emote_tasks.pop(user_id, None)
-
-            # Yeni emote döngüsü için async task oluştur
-            task = asyncio.create_task(self._emote_loop(user_id, emote_name))
-            task.emote_name = emote_name
-            self.user_emote_tasks[user_id] = task
-
-        async def _emote_loop(self, user_id: str, emote_name: str) -> None:
-            if emote_name not in emote_mapping:
-                return
-            emote_info = emote_mapping[emote_name]
-            emote_to_send = emote_info["value"]
-            emote_time = emote_info["time"]
-
-            while True:
-                try:
-                    await self.highrise.send_emote(emote_to_send, user_id)
-                except Exception as e:
-                    if "Target user not in room" in str(e):
-                        print(f"{user_id} odada değil, emote gönderme durduruluyor.")
-                        break
-                await asyncio.sleep(emote_time)
-
-        async def stop_emote_loop(self, user_id: str) -> None:
-            if user_id in self.user_emote_tasks:
-                task = self.user_emote_tasks[user_id]
-                task.cancel()
-                try:
-                    await task
-                except asyncio.CancelledError:
-                    pass
-                self.user_emote_tasks.pop(user_id, None)
+        
 
             isimler1 = [
                 "\n1 - ",
@@ -823,6 +708,110 @@ class Bot(BaseBot):
             await self.highrise.send_emote(emote_to_send, user_id)
 
 
+
+    async def kick_user(self, target_username: str, requester: User):
+        room_users = (await self.highrise.get_room_users()).content
+        target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
+        if target_user:
+            await self.highrise.kick(target_user.id)
+            await self.highrise.send_whisper(requester.id, f"{target_username} odadan atıldı.")
+        else:
+            await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
+
+    async def mute_user(self, target_username: str, requester: User):
+        await self.highrise.send_whisper(requester.id, f"{target_username} susturuldu (simülasyon).")
+
+    async def unmute_user(self, target_username: str, requester: User):
+        await self.highrise.send_whisper(requester.id, f"{target_username} susturma kaldırıldı (simülasyon).")
+
+    async def ban_user(self, target_username: str, requester: User):
+        room_users = (await self.highrise.get_room_users()).content
+        target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
+        if target_user:
+            await self.highrise.ban(target_user.id)
+            await self.highrise.send_whisper(requester.id, f"{target_username} banlandı.")
+        else:
+            await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
+
+    async def unban_user(self, target_username: str, requester: User):
+        await self.highrise.send_whisper(requester.id, f"{target_username} ban kaldırıldı (simülasyon).")
+
+    async def promote_user(self, target_username: str, requester: User):
+        room_users = (await self.highrise.get_room_users()).content
+        target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
+        if target_user:
+            await self.highrise.set_room_privilege(target_user.id, moderator=True)
+            await self.highrise.send_whisper(requester.id, f"{target_username} moderatör yapıldı.")
+        else:
+            await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
+
+    async def demote_user(self, target_username: str, requester: User):
+        room_users = (await self.highrise.get_room_users()).content
+        target_user = next((u for u, _ in room_users if u.username.lower() == target_username.lower()), None)
+        if target_user:
+            await self.highrise.set_room_privilege(target_user.id, moderator=False)
+            await self.highrise.send_whisper(requester.id, f"{target_username} moderatörlükten çıkarıldı.")
+        else:
+            await self.highrise.send_whisper(requester.id, f"{target_username} bulunamadı.")
+
+    async def announce_message(self, message: str, requester: User):
+        await self.highrise.chat(f"** Duyuru: {message} **")
+
+    async def list_bans(self, requester: User):
+        bans = await self.highrise.get_bans()
+        if bans:
+            ban_list = "\n".join([ban.username for ban in bans])
+            await self.highrise.send_whisper(requester.id, f"Banlı kullanıcılar:\n{ban_list}")
+        else:
+            await self.highrise.send_whisper(requester.id, "Banlı kullanıcı yok.")
+
+    async def start_emote_loop(self, user_id: str, emote_name: str) -> None:
+        # Aynı kullanıcıda daha önce başlatılmış bir emote döngüsü varsa
+        if user_id in self.user_emote_tasks:
+            current_task = self.user_emote_tasks[user_id]
+            if not current_task.done():
+                # Eğer aynı emote ise tekrar başlatma
+                if getattr(current_task, "emote_name", None) == emote_name:
+                    return
+                else:
+                    # Farklı emote ise önce task'i iptal et
+                    current_task.cancel()
+                    try:
+                        await current_task
+                    except asyncio.CancelledError:
+                        pass
+            self.user_emote_tasks.pop(user_id, None)
+
+        # Yeni emote döngüsü için async task oluştur
+        task = asyncio.create_task(self._emote_loop(user_id, emote_name))
+        task.emote_name = emote_name
+        self.user_emote_tasks[user_id] = task
+
+    async def _emote_loop(self, user_id: str, emote_name: str) -> None:
+        if emote_name not in emote_mapping:
+            return
+        emote_info = emote_mapping[emote_name]
+        emote_to_send = emote_info["value"]
+        emote_time = emote_info["time"]
+
+        while True:
+            try:
+                await self.highrise.send_emote(emote_to_send, user_id)
+            except Exception as e:
+                if "Target user not in room" in str(e):
+                    print(f"{user_id} odada değil, emote gönderme durduruluyor.")
+                    break
+            await asyncio.sleep(emote_time)
+
+    async def stop_emote_loop(self, user_id: str) -> None:
+        if user_id in self.user_emote_tasks:
+            task = self.user_emote_tasks[user_id]
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+            self.user_emote_tasks.pop(user_id, None)
 
     async def on_whisper(self, user: User, message: str) -> None:
         """Oda fısıltısı alındığında."""
