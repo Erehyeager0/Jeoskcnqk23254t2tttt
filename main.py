@@ -125,19 +125,19 @@ class Bot(BaseBot):
         ]
         await self.highrise.set_outfit(outfit=outfit)
 
-    # Bot kendini kullanıcıya ışınlar
-    if message == "!bot" and await self.is_user_allowed(user):
-        try:
-            room_users = await self.highrise.get_room_users()
-            for u, pos in room_users.content:
-                if u.id == user.id:
-                    await self.highrise.teleport(self.user_id, pos)
-                    break
-        except Exception as e:
-            print(f"Bot teleport hatası: {e}")
+        # Bot kendini kullanıcıya ışınlar
+        elif message == "!bot" and await self.is_user_allowed(user):
+            try:
+                room_users = await self.highrise.get_room_users()
+                for u, pos in room_users.content:
+                    if u.id == user.id:
+                        await self.highrise.teleport(self.user_id, pos)
+                        break
+            except Exception as e:
+                print(f"Bot teleport hatası: {e}")
 
-    # Hazır konumlara ışınlan
-    teleport_locations = {
+        # Hazır konumlara ışınlan
+        teleport_locations = {
         "k1": Position(10, 0, 18),
         "k2": Position(15, 4.75, 12),
         "heykel": Position(10, 10, 8),
