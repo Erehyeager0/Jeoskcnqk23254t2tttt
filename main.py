@@ -108,14 +108,14 @@ class Bot(BaseBot):
 
         if message.startswith("!botem "):
             emote_name = message[7:].strip()
-    if emote_name in emote_mapping:
-        await self.start_emote_loop(self.user_id, emote_name)  # Bot kendine emote yapacak
-        await self.highrise.send_whisper(user.id, f"Bot '{emote_name}' emote döngüsüne başladı.")
-    else:
-        await self.highrise.send_whisper(user.id, f"❌ '{emote_name}' isimli emote bulunamadı.")
-    return
+            if emote_name in emote_mapping:
+                await self.start_emote_loop(self.user_id, emote_name)  # Bot kendine emote yapacak
+                await self.highrise.send_whisper(user.id, f"Bot '{emote_name}' emote döngüsüne başladı.")
+            else:
+                await self.highrise.send_whisper(user.id, f"❌ '{emote_name}' isimli emote bulunamadı.")
+            return
 
-    # Kıyafet değiştir
+        # Kıyafet değiştir
         if message.startswith("degistir"):
             hair_active_palette = random.randint(0, 82)
             skin_active_palette = random.randint(0, 88)
