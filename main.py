@@ -216,112 +216,112 @@ class Bot(BaseBot):
             await self.highrise.chat(message)
 
         if message.lower().startswith("ceza") and await self.is_user_allowed(user):
-    target_username = message.split("@")[-1].strip().lower()
-    if target_username not in self.haricler:
-        room_users = (await self.highrise.get_room_users()).content
-        target_user = next((u for u, _ in room_users if u.username.lower() == target_username), None)
+            target_username = message.split("@")[-1].strip().lower()
+            if target_username not in self.haricler:
+                room_users = (await self.highrise.get_room_users()).content
+                target_user = next((u for u, _ in room_users if u.username.lower() == target_username), None)
 
-        if target_user:
-            if target_user.id not in self.is_teleporting_dict:
-                self.is_teleporting_dict[target_user.id] = True
-                try:
-                    while self.is_teleporting_dict.get(target_user.id, False):
-                        random_pos = Position(
-                            random.randint(0, 30), 
-                            random.randint(0, 0), 
-                            random.randint(0, 30)
-                        )
-                        await self.teleport(target_user, random_pos)
-                        await asyncio.sleep(1)
-                except Exception as e:
-                    print(f"Teleport sırasında hata: {e}")
+                if target_user:
+                    if target_user.id not in self.is_teleporting_dict:
+                        self.is_teleporting_dict[target_user.id] = True
+                        try:
+                            while self.is_teleporting_dict.get(target_user.id, False):
+                                random_pos = Position(
+                                    random.randint(0, 30), 
+                                    random.randint(0, 0), 
+                                    random.randint(0, 30)
+                                )
+                                await self.teleport(target_user, random_pos)
+                                await asyncio.sleep(1)
+                        except Exception as e:
+                            print(f"Teleport sırasında hata: {e}")
 
-                self.is_teleporting_dict.pop(target_user.id, None)
-                final_pos = Position(17.0, 0.0, 13.5, "FrontRight")
-                await self.teleport(target_user, final_pos)
+                        self.is_teleporting_dict.pop(target_user.id, None)
+                        final_pos = Position(17.0, 0.0, 13.5, "FrontRight")
+                        await self.teleport(target_user, final_pos)
 
         if message.lower().startswith("dur") and await self.is_user_allowed(user):
-    target_username = message.split("@")[-1].strip().lower()
+            target_username = message.split("@")[-1].strip().lower()
 
-    room_users = (await self.highrise.get_room_users()).content
-    target_user = next((u for u, _ in room_users if u.username.lower() == target_username), None)
+            room_users = (await self.highrise.get_room_users()).content
+            target_user = next((u for u, _ in room_users if u.username.lower() == target_username), None)
 
-    if target_user:
-        self.is_teleporting_dict.pop(target_user.id, None)
-        await self.highrise.chat(f"@{target_username} üzerindeki ceza durduruldu.")
-    else:
-        await self.highrise.chat(f"Kullanıcı @{target_username} odada bulunamadı.")
+            if target_user:
+                self.is_teleporting_dict.pop(target_user.id, None)
+                await self.highrise.chat(f"@{target_username} üzerindeki ceza durduruldu.")
+            else:
+                await self.highrise.chat(f"Kullanıcı @{target_username} odada bulunamadı.")
 
-       if message.lower().startswith("cak") and await self.is_user_allowed(user):
-    target_username = message.split("@")[-1].strip()
-    room_users = (await self.highrise.get_room_users()).content
-    user_info = next((info for info in room_users if info[0].username.lower() == target_username.lower()), None)
+        if message.lower().startswith("cak") and await self.is_user_allowed(user):
+            target_username = message.split("@")[-1].strip()
+            room_users = (await self.highrise.get_room_users()).content
+            user_info = next((info for info in room_users if info[0].username.lower() == target_username.lower()), None)
 
-    if user_info:
-        target_user_obj, initial_position = user_info
+            if user_info:
+                target_user_obj, initial_position = user_info
 
-        async def reset_target_position(target_user_obj, initial_position):
-            try:
-                while True:
-                    room_users = await self.highrise.get_room_users()
-                    current_position = next(
-                        (pos for u, pos in room_users.content if u.id == target_user_obj.id), None)
+                async def reset_target_position(target_user_obj, initial_position):
+                    try:
+                        while True:
+                            room_users = await self.highrise.get_room_users()
+                            current_position = next(
+                                (pos for u, pos in room_users.content if u.id == target_user_obj.id), None)
 
-                    if current_position and current_position != initial_position:
-                        await self.teleport(target_user_obj, initial_position)
-                    await asyncio.sleep(1)
-            except asyncio.CancelledError:
-                pass
-            except Exception as e:
-                print(f"Pozisyon izleme hatası: {e}")
+                            if current_position and current_position != initial_position:
+                                await self.teleport(target_user_obj, initial_position)
+                            await asyncio.sleep(1)
+                    except asyncio.CancelledError:
+                        pass
+                    except Exception as e:
+                        print(f"Pozisyon izleme hatası: {e}")
 
-        task = asyncio.create_task(reset_target_position(target_user_obj, initial_position))
-        if target_user_obj.id not in self.position_tasks:
-            self.position_tasks[target_user_obj.id] = []
-        self.position_tasks[target_user_obj.id].append(task)
+                task = asyncio.create_task(reset_target_position(target_user_obj, initial_position))
+                if target_user_obj.id not in self.position_tasks:
+                    self.position_tasks[target_user_obj.id] = []
+                self.position_tasks[target_user_obj.id].append(task)
 
-        await self.highrise.chat(f"@{target_username} sabit pozisyona kilitlendi.")
-    else:
-        await self.highrise.chat(f"Kullanıcı @{target_username} odada değil.")
+                await self.highrise.chat(f"@{target_username} sabit pozisyona kilitlendi.")
+            else:
+                await self.highrise.chat(f"Kullanıcı @{target_username} odada değil.")
 
         if message.lower().startswith("cek") and await self.is_user_allowed(user):
-    target_username = message.split("@")[-1].strip().lower()
+            target_username = message.split("@")[-1].strip().lower()
 
-    room_users = (await self.highrise.get_room_users()).content
-    target_user_obj = next((u for u, _ in room_users if u.username.lower() == target_username), None)
+            room_users = (await self.highrise.get_room_users()).content
+            target_user_obj = next((u for u, _ in room_users if u.username.lower() == target_username), None)
 
-    if target_user_obj:
-        tasks = self.position_tasks.pop(target_user_obj.id, [])
-        for task in tasks:
-            task.cancel()
-        await self.highrise.chat(f"@{target_username} pozisyon kilitleme iptal edildi.")
-    else:
-        await self.highrise.chat(f"Kullanıcı @{target_username} odada bulunamadı.")
+            if target_user_obj:
+                tasks = self.position_tasks.pop(target_user_obj.id, [])
+                for task in tasks:
+                    task.cancel()
+                await self.highrise.chat(f"@{target_username} pozisyon kilitleme iptal edildi.")
+            else:
+                await self.highrise.chat(f"Kullanıcı @{target_username} odada bulunamadı.")
 
-       if message.lower().startswith("kick") and await self.is_user_allowed(user):
-    parts = message.split()
-    if len(parts) != 2:
-        return
-    username = parts[1]
-    if username.startswith("@"):
-        username = username[1:]
+        if message.lower().startswith("kick") and await self.is_user_allowed(user):
+            parts = message.split()
+            if len(parts) != 2:
+                return
+            username = parts[1]
+            if username.startswith("@"):
+                username = username[1:]
 
-    room_users = (await self.highrise.get_room_users()).content
-    user_id = None
-    for room_user, _ in room_users:
-        if room_user.username.lower() == username.lower():
-            user_id = room_user.id
-            break
+            room_users = (await self.highrise.get_room_users()).content
+            user_id = None
+            for room_user, _ in room_users:
+                if room_user.username.lower() == username.lower():
+                    user_id = room_user.id
+                    break
 
-    if user_id is None:
-        await self.highrise.chat(f"Kullanıcı @{username} bulunamadı.")
-        return
+            if user_id is None:
+                await self.highrise.chat(f"Kullanıcı @{username} bulunamadı.")
+                return
 
-    try:
-        await self.highrise.moderate_room(user_id, "kick")
-        await self.highrise.chat(f"@{username} odaya atıldı.")
-    except Exception as e:
-        print(f"Kick işlemi başarısız: {e}")
+            try:
+                await self.highrise.moderate_room(user_id, "kick")
+                await self.highrise.chat(f"@{username} odaya atıldı.")
+            except Exception as e:
+                print(f"Kick işlemi başarısız: {e}")
 
         # Kıyafet değiştir
         if message.startswith("degistir"):
