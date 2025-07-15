@@ -142,7 +142,7 @@ emote_list = [
     (["137", "hands in the air", "Hands in the Air"], "dance-handsup", 22.28),
     (["138", "floss", "Floss"], "dance-floss", 21.33),
     (["139", "duck walk", "Duck Walk"], "dance-duckwalk", 11.75),
-    (["140", "ghost float", "Ghost float", "ghost", "Ghost", "ghostfloat"], "emote-ghost-idle", 18.20),
+    (["140", "ghost float", "Ghost float", "ghost", "Ghost", "ghostfloat"], "emote-ghost-idle", 18.40),
     (["141", "breakdance", "Breakdance"], "dance-breakdance", 17.62),
     (["142", "k-pop dance", "K-Pop Dance"], "dance-blackpink", 7.15),
     (["143", "push ups", "Push Ups"], "dance-aerobics", 8.8),
