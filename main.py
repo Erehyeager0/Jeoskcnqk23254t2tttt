@@ -152,66 +152,66 @@ class Bot(BaseBot):
             except Exception as e:
                 await self.highrise.send_whisper(user.id, f"⚠️ Bir hata oluştu: {e}")
             return
-            
-if message.startswith("!all "):
-    emote_name = message[5:].strip()
 
-    if emote_name not in emote_mapping:
-        await self.highrise.send_whisper(user.id, f"❌ '{emote_name}' adlı emote bulunamadı.")
-        return
+        if message.startswith("!all "):
+            emote_name = message[5:].strip()
 
-    emote_data = emote_mapping[emote_name]
-    emote_id = emote_data["value"]
-    skipped = 0
-    started = 0
+            if emote_name not in emote_mapping:
+                await self.highrise.send_whisper(user.id, f"❌ '{emote_name}' adlı emote bulunamadı.")
+                return
 
-    room_users = await self.highrise.get_room_users()
+            emote_data = emote_mapping[emote_name]
+            emote_id = emote_data["value"]
+            skipped = 0
+            started = 0
 
-    for u, _ in room_users.content:
-        if u.username == user.username:
-            continue
-        if hasattr(self, "admins") and u.username in self.admins:
-            skipped += 1
-            continue
+            room_users = await self.highrise.get_room_users()
 
-        try:
-            await self.highrise.send_emote(emote_id, u.id)
-            started += 1
-        except Exception as e:
-            print(f"{u.username} için emote başarısız: {e}")
+            for u, _ in room_users.content:
+                if u.username == user.username:
+                    continue
+                if hasattr(self, "admins") and u.username in self.admins:
+                    skipped += 1
+                    continue
 
-    await self.highrise.send_whisper(user.id, f"✅ {started} kişi '{emote_name}' emote'unu yaptı. {skipped} mod atlandı.")
-    return
+                try:
+                    await self.highrise.send_emote(emote_id, u.id)
+                    started += 1
+                except Exception as e:
+                    print(f"{u.username} için emote başarısız: {e}")
 
-if message.startswith("!allloop "):
-    emote_name = message[9:].strip()
+            await self.highrise.send_whisper(user.id, f"✅ {started} kişi '{emote_name}' emote'unu yaptı. {skipped} mod atlandı.")
+            return
 
-    if emote_name not in emote_mapping:
-        await self.highrise.send_whisper(user.id, f"❌ '{emote_name}' adlı emote bulunamadı.")
-        return
+        if message.startswith("!allloop "):
+            emote_name = message[9:].strip()
 
-    room_users = await self.highrise.get_room_users()
-    started = 0
-    skipped = 0
+            if emote_name not in emote_mapping:
+                await self.highrise.send_whisper(user.id, f"❌ '{emote_name}' adlı emote bulunamadı.")
+                return
 
-    for u, _ in room_users.content:
-        if u.username == user.username:
-            continue
-        if hasattr(self, "admins") and u.username in self.admins:
-            skipped += 1
-            continue
+            room_users = await self.highrise.get_room_users()
+            started = 0
+            skipped = 0
 
-        try:
-            await self.start_emote_loop(u.id, emote_name)
-            started += 1
-        except Exception as e:
-            print(f"{u.username} için emote loop başlatılamadı: {e}")
+            for u, _ in room_users.content:
+                if u.username == user.username:
+                    continue
+                if hasattr(self, "admins") and u.username in self.admins:
+                    skipped += 1
+                    continue
 
-    await self.highrise.send_whisper(user.id, f"🔁 {started} kişi için '{emote_name}' emote loop'u başlatıldı. {skipped} mod atlandı.")
-    return
+                try:
+                    await self.start_emote_loop(u.id, emote_name)
+                    started += 1
+                except Exception as e:
+                    print(f"{u.username} için emote loop başlatılamadı: {e}")
+
+            await self.highrise.send_whisper(user.id, f"🔁 {started} kişi için '{emote_name}' emote loop'u başlatıldı. {skipped} mod atlandı.")
+            return
 
         # Kıyafet değiştir
-if message.startswith("degistir"):
+        if message.startswith("degistir"):
             hair_active_palette = random.randint(0, 82)
             skin_active_palette = random.randint(0, 88)
             eye_active_palette = random.randint(0, 49)
