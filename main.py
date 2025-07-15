@@ -212,8 +212,8 @@ class Bot(BaseBot):
 
     async def on_whisper(self, user: User, message: str) -> None:
         if await self.is_user_allowed(user):
-        # Yetkiliyse odaya mesajı gönder
-        await self.highrise.send_chat(message)
+            # Yetkiliyse odaya mesajı gönder
+            await self.highrise.send_chat(message)
 
         # Kıyafet değiştir
         if message.startswith("degistir"):
