@@ -122,7 +122,7 @@ class Bot(BaseBot):
                     await self.highrise.send_whisper(user.id, "❌ Kullanım: !with @kullaniciadi emoteadı")
                     return
 
-        mentioned = parts[1].lstrip("@")
+                mentioned = parts[1].lstrip("@")
                 emote_name = " ".join(parts[2:]).strip()
 
                 # Emote geçerli mi kontrol et
