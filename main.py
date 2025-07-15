@@ -117,7 +117,7 @@ class Bot(BaseBot):
 
         if message.startswith("!with "):
             try:
-        parts = message.split()
+                parts = message.split()
         if len(parts) < 3:
             await self.highrise.send_whisper(user.id, "❌ Kullanım: !with @kullaniciadi emoteadı")
             return
