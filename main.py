@@ -107,7 +107,7 @@ class Bot(BaseBot):
             return
 
         if message.startswith("!botem "):
-    emote_name = message[5:].strip()
+            emote_name = message[7:].strip()
     if emote_name in emote_mapping:
         await self.start_emote_loop(self.user_id, emote_name)  # Bot kendine emote yapacak
         await self.highrise.send_whisper(user.id, f"Bot '{emote_name}' emote döngüsüne başladı.")
