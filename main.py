@@ -3,7 +3,7 @@ from highrise.models import *
 from asyncio import run as arun
 from flask import Flask
 from threading import Thread
-from highrise.__main__ import *
+from highrise.__main__ import main as highrise_main
 from emotes import*
 from kiy import (
     item_hairfront,
