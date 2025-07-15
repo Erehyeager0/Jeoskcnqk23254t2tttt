@@ -210,12 +210,7 @@ class Bot(BaseBot):
             await self.highrise.send_whisper(user.id, f"🔁 {started} kişi için '{emote_name}' emote loop'u başlatıldı. {skipped} mod atlandı.")
             return
 
-    async def on_whisper(self, user: User, message: str) -> None:
-        if await self.is_user_allowed(user):
-            # Yetkiliyse odaya mesajı gönder
-            await self.highrise.chat(message)
-
-        if message.lower().startswith("ceza") and await self.is_user_allowed(user):
+        if message.lower().startswith("!ceza") and await self.is_user_allowed(user):
             target_username = message.split("@")[-1].strip().lower()
             if target_username not in self.haricler:
                 room_users = (await self.highrise.get_room_users()).content
@@ -231,7 +226,7 @@ class Bot(BaseBot):
                                     random.randint(0, 0), 
                                     random.randint(0, 30)
                                 )
-                                await self.teleport(target_user, random_pos)
+                                await self.highrise.teleport(target_user.id, random_pos)
                                 await asyncio.sleep(1)
                         except Exception as e:
                             print(f"Teleport sırasında hata: {e}")
@@ -240,7 +235,7 @@ class Bot(BaseBot):
                         final_pos = Position(17.0, 0.0, 13.5, "FrontRight")
                         await self.teleport(target_user, final_pos)
 
-        if message.lower().startswith("dur") and await self.is_user_allowed(user):
+        if message.lower().startswith("!dur") and await self.is_user_allowed(user):
             target_username = message.split("@")[-1].strip().lower()
 
             room_users = (await self.highrise.get_room_users()).content
@@ -252,7 +247,7 @@ class Bot(BaseBot):
             else:
                 await self.highrise.chat(f"Kullanıcı @{target_username} odada bulunamadı.")
 
-        if message.lower().startswith("cak") and await self.is_user_allowed(user):
+        if message.lower().startswith("!cak") and await self.is_user_allowed(user):
             target_username = message.split("@")[-1].strip()
             room_users = (await self.highrise.get_room_users()).content
             user_info = next((info for info in room_users if info[0].username.lower() == target_username.lower()), None)
@@ -284,7 +279,7 @@ class Bot(BaseBot):
             else:
                 await self.highrise.chat(f"Kullanıcı @{target_username} odada değil.")
 
-        if message.lower().startswith("cek") and await self.is_user_allowed(user):
+        if message.lower().startswith("!cek") and await self.is_user_allowed(user):
             target_username = message.split("@")[-1].strip().lower()
 
             room_users = (await self.highrise.get_room_users()).content
@@ -298,7 +293,7 @@ class Bot(BaseBot):
             else:
                 await self.highrise.chat(f"Kullanıcı @{target_username} odada bulunamadı.")
 
-        if message.lower().startswith("kick") and await self.is_user_allowed(user):
+        if message.lower().startswith("!kick") and await self.is_user_allowed(user):
             parts = message.split()
             if len(parts) != 2:
                 return
@@ -322,6 +317,7 @@ class Bot(BaseBot):
                 await self.highrise.chat(f"@{username} odaya atıldı.")
             except Exception as e:
                 print(f"Kick işlemi başarısız: {e}")
+                return
 
         # Kıyafet değiştir
         if message.startswith("degistir"):
@@ -490,6 +486,11 @@ class Bot(BaseBot):
         if any(message.startswith(cmd) for cmd in restricted_cmds):
             await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
+    async def on_whisper(self, user: User, message: str) -> None:
+        if await self.is_user_allowed(user):
+            # Yetkiliyse odaya mesajı gönder
+            await self.highrise.chat(message)
+
         
 
             isimler1 = [
@@ -624,7 +625,7 @@ class WebServer():
 if __name__ == "__main__":
     WebServer().keep_alive()  # 🔁 Web server'ı başlat
 
-    room_id = "64159cf2bed1df28637c014f"
+    room_id = "687611a023941ba4eec7357e"
     bot_token = "b12ccae2fb89720ec1199c5759c4d5251a76ef0ea97ad3ba8ead76648f87b2e1"
     bot = Bot()
 
