@@ -118,7 +118,7 @@ class Bot(BaseBot):
         if message.startswith("!with "):
             try:
                 parts = message.split()
-        if len(parts) < 3:
+                if len(parts) < 3:
             await self.highrise.send_whisper(user.id, "❌ Kullanım: !with @kullaniciadi emoteadı")
             return
 
@@ -147,11 +147,11 @@ class Bot(BaseBot):
         await self.start_emote_loop(target_user.id, emote_name)
 
         await self.highrise.send_whisper(user.id, f"✅ Sen ve @{mentioned}, '{emote_name}' emote'unu aynı anda yapıyorsunuz.")
-        await self.highrise.send_whisper(target_user.id, f"🎭 @{user.username} ile birlikte '{emote_name}' emote'unu yapmaya başladın!")
+                await self.highrise.send_whisper(target_user.id, f"🎭 @{user.username} ile birlikte '{emote_name}' emote'unu yapmaya başladın!")
 
-    except Exception as e:
-        await self.highrise.send_whisper(user.id, f"⚠️ Bir hata oluştu: {e}")
-    return
+            except Exception as e:
+                await self.highrise.send_whisper(user.id, f"⚠️ Bir hata oluştu: {e}")
+            return
 
         # Kıyafet değiştir
         if message.startswith("degistir"):
