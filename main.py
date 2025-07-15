@@ -211,7 +211,7 @@ class Bot(BaseBot):
             return
 
     async def on_whisper(self, user: User, message: str) -> None:
-    if await self.is_user_allowed(user):
+        if await self.is_user_allowed(user):
         # Yetkiliyse odaya mesajı gönder
         await self.highrise.send_chat(message)
 
