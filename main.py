@@ -233,7 +233,7 @@ class Bot(BaseBot):
 
                         self.is_teleporting_dict.pop(target_user.id, None)
                         final_pos = Position(17.0, 0.0, 13.5, "FrontRight")
-                        await self.teleport(target_user, final_pos)
+                        await self.highrise.teleport(target_user.id, final_pos)
 
         if message.lower().startswith("!dur") and await self.is_user_allowed(user):
             target_username = message.split("@")[-1].strip().lower()
@@ -263,7 +263,7 @@ class Bot(BaseBot):
                                 (pos for u, pos in room_users.content if u.id == target_user_obj.id), None)
 
                             if current_position and current_position != initial_position:
-                                await self.teleport(target_user_obj, initial_position)
+                                await self.highrise.teleport(target_user_obj.id, initial_position)
                             await asyncio.sleep(1)
                     except asyncio.CancelledError:
                         pass
