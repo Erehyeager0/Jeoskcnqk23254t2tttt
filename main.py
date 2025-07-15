@@ -119,34 +119,34 @@ class Bot(BaseBot):
             try:
                 parts = message.split()
                 if len(parts) < 3:
-            await self.highrise.send_whisper(user.id, "❌ Kullanım: !with @kullaniciadi emoteadı")
-            return
+                    await self.highrise.send_whisper(user.id, "❌ Kullanım: !with @kullaniciadi emoteadı")
+                    return
 
         mentioned = parts[1].lstrip("@")
-        emote_name = " ".join(parts[2:]).strip()
+                emote_name = " ".join(parts[2:]).strip()
 
-        # Emote geçerli mi kontrol et
-        if emote_name not in emote_mapping:
-            await self.highrise.send_whisper(user.id, f"❌ '{emote_name}' adlı emote bulunamadı.")
-            return
+                # Emote geçerli mi kontrol et
+                if emote_name not in emote_mapping:
+                    await self.highrise.send_whisper(user.id, f"❌ '{emote_name}' adlı emote bulunamadı.")
+                    return
 
-        # Oda kullanıcılarını al
-        room_users = await self.highrise.get_room_users()
-        target_user = None
-        for u, _ in room_users.content:
-            if u.username.lower() == mentioned.lower():
-                target_user = u
-                break
+                # Oda kullanıcılarını al
+                room_users = await self.highrise.get_room_users()
+                target_user = None
+                for u, _ in room_users.content:
+                    if u.username.lower() == mentioned.lower():
+                        target_user = u
+                        break
 
-        if not target_user:
-            await self.highrise.send_whisper(user.id, f"❌ @{mentioned} odada bulunamadı.")
-            return
+                if not target_user:
+                    await self.highrise.send_whisper(user.id, f"❌ @{mentioned} odada bulunamadı.")
+                    return
 
-        # Her iki kullanıcıya aynı anda başlat
-        await self.start_emote_loop(user.id, emote_name)
-        await self.start_emote_loop(target_user.id, emote_name)
+                # Her iki kullanıcıya aynı anda başlat
+                await self.start_emote_loop(user.id, emote_name)
+                await self.start_emote_loop(target_user.id, emote_name)
 
-        await self.highrise.send_whisper(user.id, f"✅ Sen ve @{mentioned}, '{emote_name}' emote'unu aynı anda yapıyorsunuz.")
+                await self.highrise.send_whisper(user.id, f"✅ Sen ve @{mentioned}, '{emote_name}' emote'unu aynı anda yapıyorsunuz.")
                 await self.highrise.send_whisper(target_user.id, f"🎭 @{user.username} ile birlikte '{emote_name}' emote'unu yapmaya başladın!")
 
             except Exception as e:
