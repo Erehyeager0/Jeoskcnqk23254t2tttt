@@ -73,7 +73,7 @@ class Bot(BaseBot):
         )
 
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        await self.highrise.chat(f"@{user.username}, helele odasına hoşgeldin!🫦👅🌚")
+        await self.highrise.chat(f"@{user.username},🔥Inferno Club'a🔥 Hoşgeldin!")
         try:
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
@@ -144,10 +144,10 @@ class Bot(BaseBot):
 
         # Hazır konumlar
         ready_locations = {
-            "agaç": Position(10, 10, 8),
-            "k1": Position(10, 0, 18),
-            "k2": Position(15, 10, 25),
-            "babauçuyor": Position(10, 10, 18),
+            "": Position(7, 15, 9),
+            "hapis": Position(14, 0, 16),
+            "mapus": Position(14, 0, 27),
+            "": Position(4, 16, 2),
         }
 
         if message in ready_locations:
@@ -838,7 +838,7 @@ class Bot(BaseBot):
 
     async def is_user_allowed(self, user: User) -> bool:
         user_privileges = await self.highrise.get_room_privilege(user.id)
-        return user_privileges.moderator or user.username in ["Carterers", "Evo.lul", "_Posion.Twd"]
+        return user_privileges.moderator or user.username in ["Carterers", "mhrmws", "Elifmisim.m00", "Ayshee2", "mhrmws_", "revenqee"]
 
 # gellllbbb
 
@@ -1006,107 +1006,40 @@ class Bot(BaseBot):
             print(f"Pozisyon takibi sırasında hata oluştu: {e}")  
 
     async def run(self, room_id, token) -> None:
-        await __main__.main(self, room_id, token)
+        from highrise import BotDefinition
+        from highrise.__main__ import main as highrise_main
+        definitions = [BotDefinition(self, room_id, token)]
+        await highrise_main(definitions)
+
+    async def shutdown(self):
+        # Task'ları iptal et
+        for task in asyncio.all_tasks():
+            task.cancel()
+        # Cancel edilenleri bekle
+        await asyncio.gather(*asyncio.all_tasks(), return_exceptions=True)
+
 class WebServer():
+    def __init__(self):
+        self.app = Flask(__name__)
 
-  def __init__(self):
-    self.app = Flask(__name__)
+        @self.app.route('/')
+        def index() -> str:
+            return "Bot çalışıyor ✅"
 
-    @self.app.route('/')
-    def index() -> str:
-      return "Bot çalışıyor ✅"
+    def run(self) -> None:
+        self.app.run(host='0.0.0.0', port=8080)
 
-  def run(self) -> None:
-    self.app.run(host='0.0.0.0', port=8080)
+    def keep_alive(self):
+        t = Thread(target=self.run)
+        t.start()
 
-  def keep_alive(self):
-    t = Thread(target=self.run)
-    t.start()
-
-class RunBot():
-    room_id = "686fb0b4d4c825eec483f1a3" 
-    bot_token = "b12ccae2fb89720ec1199c5759c4d5251a76ef0ea97ad3ba8ead76648f87b2e1"
-    bot_file = "main"
-    bot_class = "Bot"
-
-    def __init__(self) -> None:
-        self.definitions = [
-            BotDefinition(
-                getattr(import_module(self.bot_file), self.bot_class)(),
-                self.room_id, self.bot_token)
-        ] 
-
-    def run_loop(self) -> None:
-        import asyncio
-        import time
-
-        while True:
-            try:
-                # Create a new event loop for each iteration
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-
-                try:
-                    loop.run_until_complete(main(self.definitions))
-                finally:
-                    # Properly close the loop
-                    try:
-                        # Cancel all running tasks
-                        pending = asyncio.all_tasks(loop)
-                        for task in pending:
-                            task.cancel()
-
-                        # Wait for all tasks to complete cancellation
-                        if pending:
-                            loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
-                    except:
-                        pass
-
-                    # Close the loop
-                    loop.close()
-
-            except Exception as e:
-                import traceback
-                print("Bir hata yakalandı:")
-                traceback.print_exc()
-                time.sleep(3)  # Wait a bit longer before retrying
-
-
+# BOT BAŞLATICI
 if __name__ == "__main__":
-  import signal
-  import sys
+    WebServer().keep_alive()  # 🔁 Web server'ı başlat
 
-  # Start web server
-  WebServer().keep_alive()
+    room_id = "687611a023941ba4eec7357e"
+    bot_token = "b12ccae2fb89720ec1199c5759c4d5251a76ef0ea97ad3ba8ead76648f87b2e1"
+    bot = Bot()
 
-  from threading import Thread
-
-  def start_bot():
-    try:
-      RunBot().run_loop()
-    except KeyboardInterrupt:
-      print("Bot durduruluyor...")
-      sys.exit(0)
-    except Exception as e:
-      import traceback
-      print("Bot çöktü:")
-      traceback.print_exc()
-
-  def signal_handler(sig, frame):
-    print("Uygulama kapatılıyor...")
-    sys.exit(0)
-
-  # Handle shutdown signals
-  signal.signal(signal.SIGINT, signal_handler)
-  signal.signal(signal.SIGTERM, signal_handler)
-
-  bot_thread = Thread(target=start_bot)
-  bot_thread.daemon = True
-  bot_thread.start()
-
-  # Keep the main thread alive
-  try:
-    bot_thread.join()
-  except KeyboardInterrupt:
-    print("Ana thread durduruluyor...")
-    sys.exit(0)
+    definitions = [BotDefinition(bot, room_id, bot_token)]
+    asyncio.run(highrise_main(definitions))
