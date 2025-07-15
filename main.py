@@ -210,6 +210,11 @@ class Bot(BaseBot):
             await self.highrise.send_whisper(user.id, f"🔁 {started} kişi için '{emote_name}' emote loop'u başlatıldı. {skipped} mod atlandı.")
             return
 
+    async def on_whisper(self, user: User, message: str) -> None:
+    if await self.is_user_allowed(user):
+        # Yetkiliyse odaya mesajı gönder
+        await self.highrise.send_chat(message)
+
         # Kıyafet değiştir
         if message.startswith("degistir"):
             hair_active_palette = random.randint(0, 82)
