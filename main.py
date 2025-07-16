@@ -473,9 +473,10 @@ class Bot(BaseBot):
                 await self.highrise.send_whisper(user.id,
                     "🛠️ **Mod Komutları (2/4):**\n"
                     "📦 `!bringall konum/@kişi` → Herkesi ışınla.\n"
+                                                          "🤝 `!with @kullanıcı emote` → Belirttiğin kişiyle aynı anda emoji yapar.\n         
+                    
                     "🤖 `!bot` → Bot kendini sana ışınlar.\n"
-                    "🗣️ `!say mesaj` → Bot odaya mesaj atar.\n"
-                    "🎭 `degistir` → Bot rastgele kıyafet değiştirir.")
+                    )
 
                 await self.highrise.send_whisper(user.id,
                     "🛠️ **Mod Komutları (3/4):**\n"
@@ -487,8 +488,9 @@ class Bot(BaseBot):
                 await self.highrise.send_whisper(user.id,
                     "🛠️ **Mod Komutları (4/4):**\n"
                     "🦶 `!kick @kişi` → Odadan at.\n"
-                    "📍 `!kat k1` → Bulunduğun konumu kaydet.\n"
-                    "🏃 `k1` → Kayıtlı konuma ışınlan.\n"
+                                                           "👥 `!all` → Odadaki herkese emoji yap.\n"
+                                
+    "🔁 `!allloop` → Herkese döngülü emoji başlatır."\n
                     "ℹ️ `!helpmod` → Bu listeyi tekrar gösterir.")
                 return
 
