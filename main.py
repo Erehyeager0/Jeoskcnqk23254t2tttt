@@ -463,31 +463,33 @@ class Bot(BaseBot):
                 return
 
             elif message in ["-helpmod", "!helpmod"]:
-                await self.highrise.send_whisper(user.id,
-                    "**🔒 Moderatör Komutları (1/3):**\n"
-                    "🧍‍♂️ `!tp @kullanici` → Kullanıcıya ışınlan.\n"
-                    "📍 `!tp @kullanici konum` → Kullanıcıyı konuma ışınla.\n"
-                    "📥 `!gel @kullanici` → Kullanıcıyı yanına getir.\n"
-                    "🗺️ `!goto konum` → Kendini hazır konuma ışınla.\n"
-                    "📦 `!bringall konum/@kullanici` → Herkesi konuma veya kişiye ışınla.")
+    await self.highrise.send_whisper(user.id,
+        "🛠️ **Mod Komutları (1/4):**\n"
+        "🧍 `!tp @kullanıcı` → Ona ışınlan.\n"
+        "📍 `!tp @kullanıcı konum` → Hazır konuma ışınla.\n"
+        "📥 `!gel @kullanıcı` → Onu yanına ışınla.\n"
+        "🗺️ `!goto konum` → Kendini hazır konuma ışınla.")
 
-                await self.highrise.send_whisper(user.id,
-                    "**🔒 Moderatör Komutları (2/3):**\n"
-                    "🤖 `!bot` → Bot seni bulur.\n"
-                    "🗣️ `!say mesaj` → Bot odada mesaj atar.\n"
-                    "📌 `!kat k1` → Konumunu 'k1' olarak kaydeder.\n"
-                    "📌 `k1` → 'k1' konumuna ışınlan.\n"
-                    "🎭 `degistir` → Botun kıyafetini rastgele değiştir.\n"
-                    "ℹ️ `!helpmod` → Yardım listesini gösterir.")
+    await self.highrise.send_whisper(user.id,
+        "🛠️ **Mod Komutları (2/4):**\n"
+        "📦 `!bringall konum/@kişi` → Herkesi ışınla.\n"
+        "🤖 `!bot` → Bot kendini sana ışınlar.\n"
+        "🗣️ `!say mesaj` → Bot odaya mesaj atar.\n"
+        "🎭 `degistir` → Bot rastgele kıyafet değiştirir.")
 
-                await self.highrise.send_whisper(user.id,
-                    "**🔒 Moderatör Komutları (3/3):**\n"
-                    "🚫 `!ceza @kullanici` → Kullanıcıyı sürekli ışınla.\n"
-                    "✅ `!dur @kullanici` → Cezayı durdurur.\n"
-                    "🧱 `!cak @kullanici` → Kullanıcıyı sabitle.\n"
-                    "💨 `!cek @kullanici` → Sabitlemeyi kaldır.\n"
-                    "🦶 `!kick @kullanici` → Kullanıcıyı odadan at.\n"
-                    "🛠️ Carterers'in selamı var 🌚")
+    await self.highrise.send_whisper(user.id,
+        "🛠️ **Mod Komutları (3/4):**\n"
+        "🚫 `!ceza @kişi` → Sürekli ışınla (ceza).\n"
+        "✅ `!dur @kişi` → Cezayı durdurur.\n"
+        "🧱 `!cak @kişi` → Yerini sabitler.\n"
+        "💨 `!cek @kişi` → Sabitlemeyi iptal eder.")
+
+    await self.highrise.send_whisper(user.id,
+        "🛠️ **Mod Komutları (4/4):**\n"
+        "🦶 `!kick @kişi` → Odadan at.\n"
+        "📍 `!kat k1` → Bulunduğun konumu kaydet.\n"
+        "🏃 `k1` → Kayıtlı konuma ışınlan.\n"
+        "ℹ️ `!helpmod` → Bu listeyi tekrar gösterir.")
                 return
 
         else:
