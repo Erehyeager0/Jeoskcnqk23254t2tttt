@@ -502,8 +502,6 @@ class Bot(BaseBot):
             # Yetkiliyse odaya mesajı gönder
             await self.highrise.chat(message)
 
-        
-
             isimler1 = [
                 "\n1 - ",
                 "\n2 - ",
