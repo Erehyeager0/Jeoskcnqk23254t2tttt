@@ -473,8 +473,7 @@ class Bot(BaseBot):
                 await self.highrise.send_whisper(user.id,
                     "🛠️ **Mod Komutları (2/4):**\n"
                     "📦 `!bringall konum/@kişi` → Herkesi ışınla.\n"
-                                                          "🤝 `!with @kullanıcı emote` → Belirttiğin kişiyle aynı anda emoji yapar.\n         
-                    
+                    "🤝 `!with @kullanıcı emote` → Belirttiğin kişiyle aynı anda emoji yapar.\n"
                     "🤖 `!bot` → Bot kendini sana ışınlar.\n"
                     )
 
