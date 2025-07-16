@@ -194,7 +194,7 @@ emote_list = [
     (["189", "ice cream dance", "Ice Cream Dance"], "dance-icecream", 14.769573),
     (["190", "wrong dance", "Wrong Dance"], "dance-wrong", 12.422389),
     (["191", "uwu", "UwU"], "idle-uwu", 24.761968),
-    (["192", "tiktok dance 4", "TikTok Dance 4"], "idle-dance-tiktok4", 15.500708),
+    (["192", "tiktok dance 4", "TikTok Dance 4", "sayso"], "idle-dance-tiktok4", 15.500708),
     (["193", "advanced shy", "Advanced Shy"], "emote-shy2", 4.989278),
     (["194", "anime dance", "Anime Dance"], "dance-anime", 8.46671),
     (["195", "kawaii", "Kawaii"], "dance-kawai", 10.290789),

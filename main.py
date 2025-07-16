@@ -78,7 +78,7 @@ class Bot(BaseBot):
         )
 
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        await self.highrise.chat(f"@{user.username},🔥Inferno Club'a🔥 Hoşgeldin!")
+        await self.highrise.chat(f"@{user.username},😻😺Kedi Kafe'ye😺😻 Hoşgeldin!")
         try:
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
@@ -357,10 +357,10 @@ class Bot(BaseBot):
 
         # Hazır konumlar
         ready_locations = {
-            "": Position(7, 15, 9),
-            "hapis": Position(14, 0, 16),
-            "mapus": Position(14, 0, 27),
-            "": Position(4, 16, 2),
+            "k1": Position(7, 0, 13),
+            "k2": Position(17, 9, 13),
+            "🌚": Position(7, 8, 13),
+            "🫦": Position(4, 16, 2),
         }
 
         if message in ready_locations:
@@ -464,19 +464,30 @@ class Bot(BaseBot):
                 return
 
             elif message in ["-helpmod", "!helpmod"]:
-                await self.highrise.send_whisper(user.id,
-                    "🔒 **Moderatör Komutları:**\n"
-                    "🧍‍♂️ `!tp @kullanici` → Belirttiğin kullanıcıya ışınlanırsın.\n"
-                    "📍 `!tp @kullanici konum` → Kullanıcıyı hazır konuma ışınlarsın.\n"
-                    "📥 `!gel @kullanici` → Kullanıcıyı yanına ışınlarsın.\n"
-                    "Carterers'in selamı var 🌚")
+    await self.highrise.send_whisper(user.id,
+        "🔒 **Moderatör Komutları (1):**\n"
+        "🧍‍♂️ `!tp @kullanici` → Kullanıcıya ışınlan.\n"
+        "📍 `!tp @kullanici konum` → Kullanıcıyı konuma ışınla.\n"
+        "📥 `!gel @kullanici` → Kullanıcıyı yanına çağır.\n"
+        "🗺️ `!goto konum` → Kendini hazır konuma ışınla.\n"
+        "📦 `!bringall konum/@kullanici` → Herkesi konuma ya da kullanıcıya ışınla.\n"
+        "🤖 `!bot` → Bot kendini yanına ışınlar.\n"
+        "🗣️ `!say mesaj` → Bot mesaj atar.\n"
+        "📑 `!helpmod` → Yardım komutlarını gösterir.\n"
+        "🛠️ Carterers'in selamı var 🌚")
 
-                await self.highrise.send_whisper(user.id,
-                    "🧲 `!bringall konum` → Herkesi belirli bir konuma ışınlarsın.\n"
-                                                 "🤖 `!bot` → Bot kendini yanına ışınlar.\n"
-                    "🗣️ `!say mesaj` → Bot ile odaya mesaj gönder.\n"
-                    "Carterers'in selamı var 🌚")
-                return
+    await self.highrise.send_whisper(user.id,
+        "🔒 **Moderatör Komutları (2):**\n"
+        "🚫 `!ceza @kullanici` → Kullanıcıya ceza verir (sürekli ışınlar).\n"
+        "✅ `!dur @kullanici` → Ceza modunu durdurur.\n"
+        "🧱 `!cak @kullanici` → Kullanıcının yerini sabitler.\n"
+        "💨 `!cek @kullanici` → Sabitlemeyi kaldırır.\n"
+        "🦶 `!kick @kullanici` → Kullanıcıyı odadan atar.\n"
+        "📍 `!kat k1` → Bulunduğun yeri 'k1' olarak kaydeder.\n"
+        "📍 `k1` → Kaydedilen 'k1' konumuna ışınlan.\n"
+        "🎲 `degistir` → Botun kıyafetini değiştirir.\n"
+        "🛠️ Carterers'in selamı var 🌚")
+    return
 
         # Yetkisiz kullanıcı komut denediğinde uyar
         restricted_cmds = [
@@ -587,7 +598,7 @@ class Bot(BaseBot):
 
     async def is_user_allowed(self, user: User) -> bool:
         user_privileges = await self.highrise.get_room_privilege(user.id)
-        return user_privileges.moderator or user.username in ["Carterers", "mhrmws", "Elifmisim.m00", "Ayshee2", "mhrmws_", "revenqee"]
+        return user_privileges.moderator or user.username in ["Carterers", "mhrmws", "Elifmisim.m00", "Ayshee2", "mhrmws_", "revenqee", "baby.shark.dududu"]
 
     async def on_tip(self, sender: User, receiver: User, tip: CurrencyItem | Item) -> None:
         message = f"{sender.username} tarafından {receiver.username} adlı kişiye {tip.amount} miktarında hediye gönderildi! 🎁 Teşekkürler!"
@@ -624,9 +635,11 @@ class WebServer():
 # BOT BAŞLATICI
 if __name__ == "__main__":
     WebServer().keep_alive()  # 🔁 Web server'ı başlat
+    
+    time.sleep(2)
 
-    room_id = "687611a023941ba4eec7357e"
-    bot_token = "b12ccae2fb89720ec1199c5759c4d5251a76ef0ea97ad3ba8ead76648f87b2e1"
+    room_id = "686178a82d1ff0138e5df007"
+    bot_token = "607da1fc65393391b2e97153d69ef4e4fff5f431b9b99ef4076144b736a0cc28"
     bot = Bot()
 
     definitions = [BotDefinition(bot, room_id, bot_token)]
