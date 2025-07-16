@@ -476,7 +476,7 @@ class Bot(BaseBot):
         "📑 `!helpmod` → Yardım komutlarını gösterir.\n"
         "🛠️ Carterers'in selamı var 🌚")
 
-    await self.highrise.send_whisper(user.id,
+                await self.highrise.send_whisper(user.id,
                     "🔒 **Moderatör Komutları (2):**\n"
         "🚫 `!ceza @kullanici` → Kullanıcıya ceza verir (sürekli ışınlar).\n"
         "✅ `!dur @kullanici` → Ceza modunu durdurur.\n"
