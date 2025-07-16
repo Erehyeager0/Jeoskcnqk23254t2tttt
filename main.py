@@ -489,13 +489,14 @@ class Bot(BaseBot):
         "🦶 `!kick @kullanici` → Kullanıcıyı odadan at.\n"
         "🛠️ Carterers’in selamı var 🌚")
 
-        # Yetkisiz kullanıcı komut denediğinde uyar
-        restricted_cmds = [
-            "!tp", "!gel", "!kick", "!ban", "!unban", "!mute", "!unmute",
-            "!promote", "!demote", "!announce", "!say", "!bringall", "!goto", "!listbans"
-        ]
-        if any(message.startswith(cmd) for cmd in restricted_cmds):
-            await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
+        else:
+            # Yetkisiz kullanıcı komut denediğinde uyar
+            restricted_cmds = [
+                "!tp", "!gel", "!kick", "!ban", "!unban", "!mute", "!unmute",
+                "!promote", "!demote", "!announce", "!say", "!bringall", "!goto", "!listbans"
+            ]
+            if any(message.startswith(cmd) for cmd in restricted_cmds):
+                await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
     async def on_whisper(self, user: User, message: str) -> None:
         if await self.is_user_allowed(user):
