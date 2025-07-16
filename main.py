@@ -464,7 +464,7 @@ class Bot(BaseBot):
                 return
 
             elif message in ["-helpmod", "!helpmod"]:
-    await self.highrise.send_whisper(user.id,
+                await self.highrise.send_whisper(user.id,
         "🔒 **Moderatör Komutları (1):**\n"
         "🧍‍♂️ `!tp @kullanici` → Kullanıcıya ışınlan.\n"
         "📍 `!tp @kullanici konum` → Kullanıcıyı konuma ışınla.\n"
@@ -477,7 +477,7 @@ class Bot(BaseBot):
         "🛠️ Carterers'in selamı var 🌚")
 
     await self.highrise.send_whisper(user.id,
-        "🔒 **Moderatör Komutları (2):**\n"
+                    "🔒 **Moderatör Komutları (2):**\n"
         "🚫 `!ceza @kullanici` → Kullanıcıya ceza verir (sürekli ışınlar).\n"
         "✅ `!dur @kullanici` → Ceza modunu durdurur.\n"
         "🧱 `!cak @kullanici` → Kullanıcının yerini sabitler.\n"
@@ -487,7 +487,7 @@ class Bot(BaseBot):
         "📍 `k1` → Kaydedilen 'k1' konumuna ışınlan.\n"
         "🎲 `degistir` → Botun kıyafetini değiştirir.\n"
         "🛠️ Carterers'in selamı var 🌚")
-    return
+                return
 
         # Yetkisiz kullanıcı komut denediğinde uyar
         restricted_cmds = [
