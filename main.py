@@ -463,7 +463,7 @@ class Bot(BaseBot):
                 return
 
             elif message in ["-helpmod", "!helpmod"]:
-    await self.highrise.send_whisper(user.id,
+                await self.highrise.send_whisper(user.id,
         "**🔒 Moderatör Komutları (1/3):**\n"
         "🧍‍♂️ `!tp @kullanici` → Kullanıcıya ışınlan.\n"
         "📍 `!tp @kullanici konum` → Kullanıcıyı konuma ışınla.\n"
