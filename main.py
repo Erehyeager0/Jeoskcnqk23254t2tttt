@@ -463,28 +463,31 @@ class Bot(BaseBot):
                 return
 
             elif message in ["-helpmod", "!helpmod"]:
-                await self.highrise.send_whisper(user.id,
-                    "**🔒 Moderatör Komutları (1/2):**\n"
-                    "🧍‍♂️ `!tp @kullanici` → Kullanıcıya ışınlan.\n"
-                    "📍 `!tp @kullanici konum` → Kullanıcıyı hazır konuma ışınla.\n"
-                    "📥 `!gel @kullanici` → Kullanıcıyı yanına çek.\n"
-                    "🗺️ `!goto konum` → Belirlenen konuma ışınlan.\n"
-                    "📦 `!bringall konum/@kullanici` → Herkesi konuma veya kullanıcıya ışınla.\n"
-                    "🤖 `!bot` → Bot seni bulur.\n"
-                    "🗣️ `!say mesaj` → Bot odada mesaj atar.\n"
-                    "ℹ️ `!helpmod` → Yardım listesini gösterir.")
+    await self.highrise.send_whisper(user.id,
+        "**🔒 Moderatör Komutları (1/3):**\n"
+        "🧍‍♂️ `!tp @kullanici` → Kullanıcıya ışınlan.\n"
+        "📍 `!tp @kullanici konum` → Kullanıcıyı konuma ışınla.\n"
+        "📥 `!gel @kullanici` → Kullanıcıyı yanına getir.\n"
+        "🗺️ `!goto konum` → Kendini hazır konuma ışınla.\n"
+        "📦 `!bringall konum/@kullanici` → Herkesi konuma veya kişiye ışınla.")
 
-                await self.highrise.send_whisper(user.id,
-                    "**🔒 Moderatör Komutları (2/2):**\n"
-                    "🚫 `!ceza @kullanici` → Kullanıcıyı sürekli ışınla.\n"
-                    "✅ `!dur @kullanici` → Cezayı durdur.\n"
-                    "🧱 `!cak @kullanici` → Kullanıcıyı sabitle.\n"
-                    "💨 `!cek @kullanici` → Sabitlemeyi kaldır.\n"
-                    "🦶 `!kick @kullanici` → Kullanıcıyı odadan at.\n"
-                    "📌 `!kat k1` → Şu anki konumu 'k1' olarak ayarla.\n"
-                    "📌 `k1` → 'k1' konumuna ışınlan.\n"
-                    "🎭 `degistir` → Botun kıyafetini değiştir.\n"
-                    "🛠️ Carterers'in selamı var 🌚")
+    await self.highrise.send_whisper(user.id,
+        "**🔒 Moderatör Komutları (2/3):**\n"
+        "🤖 `!bot` → Bot seni bulur.\n"
+        "🗣️ `!say mesaj` → Bot odada mesaj atar.\n"
+        "📌 `!kat k1` → Konumunu 'k1' olarak kaydeder.\n"
+        "📌 `k1` → 'k1' konumuna ışınlan.\n"
+        "🎭 `degistir` → Botun kıyafetini rastgele değiştir.\n"
+        "ℹ️ `!helpmod` → Yardım listesini gösterir.")
+
+    await self.highrise.send_whisper(user.id,
+        "**🔒 Moderatör Komutları (3/3):**\n"
+        "🚫 `!ceza @kullanici` → Kullanıcıyı sürekli ışınla.\n"
+        "✅ `!dur @kullanici` → Cezayı durdurur.\n"
+        "🧱 `!cak @kullanici` → Kullanıcıyı sabitle.\n"
+        "💨 `!cek @kullanici` → Sabitlemeyi kaldır.\n"
+        "🦶 `!kick @kullanici` → Kullanıcıyı odadan at.\n"
+        "🛠️ Carterers’in selamı var 🌚")
 
         # Yetkisiz kullanıcı komut denediğinde uyar
         restricted_cmds = [
