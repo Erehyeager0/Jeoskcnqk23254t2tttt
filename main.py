@@ -77,7 +77,7 @@ class Bot(BaseBot):
         )
 
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        await self.highrise.chat(f"@{user.username},😻😺Kedi Kafe'ye😺😻 Hoşgeldin!")
+        await self.highrise.chat(f"@{user.username},🔥Inferno Club'a🔥 Hoşgeldin!")
         try:
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
@@ -489,7 +489,7 @@ class Bot(BaseBot):
                     "🦶 `!kick @kişi` → Odadan at.\n"
                                                            "👥 `!all` → Odadaki herkese emoji yap.\n"
                                 
-    "🔁 `!allloop` → Herkese döngülü emoji başlatır."\n
+    "🔁 `!allloop` → Herkese döngülü emoji başlatır.\n"
                     "ℹ️ `!helpmod` → Bu listeyi tekrar gösterir.")
                 return
 
@@ -641,8 +641,8 @@ if __name__ == "__main__":
 
     time.sleep(2)
 
-    room_id = "686178a82d1ff0138e5df007"
-    bot_token = "607da1fc65393391b2e97153d69ef4e4fff5f431b9b99ef4076144b736a0cc28"
+    room_id = "687611a023941ba4eec7357e"
+    bot_token = "b12ccae2fb89720ec1199c5759c4d5251a76ef0ea97ad3ba8ead76648f87b2e1"
     bot = Bot()
 
     definitions = [BotDefinition(bot, room_id, bot_token)]
