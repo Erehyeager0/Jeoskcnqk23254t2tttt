@@ -422,27 +422,26 @@ class Bot(BaseBot):
                     target_username = parts[1].lstrip("@")
                     target_location = parts[2] if len(parts) > 2 else None
 
-                room_users = await self.highrise.get_room_users()
-                target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
+                    room_users = await self.highrise.get_room_users()
+                    target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
 
-                if not target_user:
-                    await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
-                elif target_location and target_location in self.kat_positions:
-                    await self.highrise.teleport(target_user.id, self.kat_positions[target_location])
-                    await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
-                    if target_user.id != self.user_id:
-                        await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
-                else:
-                    target_pos = next((pos for u, pos in room_users.content if u.username.lower() == target_username.lower()), None)
-                    if target_pos:
-                        await self.highrise.teleport(user.id, target_pos)
-                        await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
+                    if not target_user:
+                        await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
+                    elif target_location and target_location in self.kat_positions:
+                        await self.highrise.teleport(target_user.id, self.kat_positions[target_location])
+                        await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
+                        if target_user.id != self.user_id:
+                            await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
                     else:
-                        await self.highrise.send_whisper(user.id, f"❌ {target_username} kullanıcısının pozisyonu alınamadı.")
-            else:
-                await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanıcı [konum]")
-            return
-        
+                        target_pos = next((pos for u, pos in room_users.content if u.username.lower() == target_username.lower()), None)
+                        if target_pos:
+                            await self.highrise.teleport(user.id, target_pos)
+                            await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
+                        else:
+                            await self.highrise.send_whisper(user.id, f"❌ {target_username} kullanıcısının pozisyonu alınamadı.")
+                else:
+                    await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanıcı [konum]")
+                return
 
             elif message.startswith("!gel "):
                 target_username = message[5:].strip().lstrip("@")
