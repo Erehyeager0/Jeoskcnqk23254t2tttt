@@ -85,7 +85,7 @@ class Bot(BaseBot):
     def save_kat_positions(self):
         try:
             with open(self.kat_positions_file, "w", encoding="utf-8") as f:
-            serializable = {
+                serializable = {
                     k: {
                         "x": v.x,
                         "y": v.y,
