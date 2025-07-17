@@ -25,6 +25,8 @@ import random
 import asyncio
 import time
 import importlib
+import json
+import os
 from datetime import datetime
 
 # Create emote_mapping dictionary from emote_list
@@ -61,9 +63,33 @@ class Bot(BaseBot):
         self.following_user_id = None
         self.kus = {}
         self.user_positions = {} 
-        self.position_tasks = {} 
+        self.position_tasks = {}
+        self.kat_positions = {}
+        self.kat_positions_file = "kat_positions.json"
+        self.load_kat_positions()
 
-    haricler = ["","","","","","",","] 
+    haricler = ["","","","","","",","]
+
+    def load_kat_positions(self):
+    if os.path.exists(self.kat_positions_file):
+        try:
+            with open(self.kat_positions_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                self.kat_positions = {k: Position(**v) for k, v in data.items()}
+            print("✅ Kat pozisyonları yüklendi.")
+        except Exception as e:
+            print(f"⚠️ Kat pozisyonları yüklenirken hata: {e}")
+    else:
+        print("📁 Kat pozisyon dosyası bulunamadı, yeni dosya oluşturulacak.")
+
+    def save_kat_positions(self):
+    try:
+        with open(self.kat_positions_file, "w", encoding="utf-8") as f:
+            serializable = {k: v.dict() for k, v in self.kat_positions.items()}
+            json.dump(serializable, f, ensure_ascii=False, indent=4)
+        print("💾 Kat pozisyonları kaydedildi.")
+    except Exception as e:
+        print(f"❌ Kat pozisyonları kaydedilirken hata: {e}")
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emote gönderdi: {emote_id}")
@@ -77,7 +103,7 @@ class Bot(BaseBot):
         )
 
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        await self.highrise.chat(f"@{user.username},🔥Inferno Club'a🔥 Hoşgeldin!")
+        await self.highrise.chat(f"@{user.username},🔥Marjinal Club'a🔥 Hoşgeldin!")
         try:
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
@@ -506,6 +532,35 @@ class Bot(BaseBot):
             if any(message.startswith(cmd) for cmd in restricted_cmds):
                 await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
+# !kat k1 gibi komutla pozisyon kaydetme
+        if msg.startswith("!kat "):
+            kat_ismi = msg[5:].strip()
+            room_users = (await self.highrise.get_room_users()).content
+            user_pos = None
+            for u, pos in room_users:
+                if u.id == user.id:
+                    user_pos = pos
+                    break
+
+            if user_pos is None:
+                await self.highrise.chat(f"@{user.username}, konumun alınamadı!")
+                return
+
+            self.kat_positions[kat_ismi] = user_pos
+            self.save_kat_positions()
+            await self.highrise.chat(f"Pozisyon '{kat_ismi}' başarıyla kaydedildi.")
+            return
+
+        # Eğer mesaj kayıtlı bir kat adıysa, ışınlan
+        if msg in self.kat_positions:
+            pos = self.kat_positions[msg]
+            try:
+                await self.highrise.teleport(user.id, pos)
+                await self.highrise.chat(f"@{user.username}, '{msg}' pozisyonuna ışınlandın!")
+            except Exception as e:
+                await self.highrise.chat(f"Işınlanırken hata oluştu: {e}")
+            return
+
     async def on_whisper(self, user: User, message: str) -> None:
         if await self.is_user_allowed(user):
             # Yetkiliyse odaya mesajı gönder
@@ -605,7 +660,7 @@ class Bot(BaseBot):
 
     async def is_user_allowed(self, user: User) -> bool:
         user_privileges = await self.highrise.get_room_privilege(user.id)
-        return user_privileges.moderator or user.username in ["Carterers", "mhrmws", "Elifmisim.m00", "Ayshee2", "mhrmws_", "revenqee", "baby.shark.dududu"]
+        return user_privileges.moderator or user.username in ["Carterers", "Batuhan_03a"]
 
     async def on_tip(self, sender: User, receiver: User, tip: CurrencyItem | Item) -> None:
         message = f"{sender.username} tarafından {receiver.username} adlı kişiye {tip.amount} miktarında hediye gönderildi! 🎁 Teşekkürler!"
@@ -645,8 +700,8 @@ if __name__ == "__main__":
 
     time.sleep(2)
 
-    room_id = "687611a023941ba4eec7357e"
-    bot_token = "b12ccae2fb89720ec1199c5759c4d5251a76ef0ea97ad3ba8ead76648f87b2e1"
+    room_id = "6862d2d8d4ad9540407d076a"
+    bot_token = "ccb36486b5686dbc60ac97e550a82ebd475dfd402e84c1ed109f8da74538fefd"
     bot = Bot()
 
     definitions = [BotDefinition(bot, room_id, bot_token)]
