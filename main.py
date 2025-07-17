@@ -58,6 +58,7 @@ class Bot(BaseBot):
         self.user_emote_tasks = {}
         self.user_emote_loops = {}
         self.loop_task = None
+        self.mod_users = set()
         self.is_teleporting_dict = {}
         self.following_user = None
         self.following_user_id = None
@@ -664,33 +665,42 @@ class Bot(BaseBot):
                     print(f"Mute hatası: {e}")
             else:
                 await self.highrise.chat(f"@{username} bulunamadı.")
+               return
 
-        elif message.startswith("!unmute") and await self.is_user_allowed(user):
+        if msg.startswith("!modekle "):
             parts = message.split()
             if len(parts) != 2:
+                await self.highrise.send_whisper(user.id, "Kullanım: !modekle @kullanici")
                 return
-
             username = parts[1].lstrip("@")
             room_users = (await self.highrise.get_room_users()).content
-
             target_user = next((u for u, _ in room_users if u.username.lower() == username.lower()), None)
+            if target_user:
+                self.mod_users.add(target_user.id)  # veya target_user.username
+                await self.highrise.send_whisper(user.id, f"✅ @{username} moderatör olarak eklendi.")
+            else:
+                await self.highrise.send_whisper(user.id, f"❌ @{username} bulunamadı.")
+            return
 
-            if target_user is None:
-                await self.highrise.chat(f"🚫 @{username} bulunamadı.")
+        # !modkaldir komutu
+        if msg.startswith("!modkaldir "):
+            parts = message.split()
+            if len(parts) != 2:
+                await self.highrise.send_whisper(user.id, "Kullanım: !modkaldir @kullanici")
                 return
+            username = parts[1].lstrip("@")
+            room_users = (await self.highrise.get_room_users()).content
+            target_user = next((u for u, _ in room_users if u.username.lower() == username.lower()), None)
+            if target_user:
+                if target_user.id in self.mod_users:
+                    self.mod_users.remove(target_user.id)
+                    await self.highrise.send_whisper(user.id, f"✅ @{username} moderatörlükten çıkarıldı.")
+                else:
+                    await self.highrise.send_whisper(user.id, f"❌ @{username} zaten moderatör değil.")
+            else:
+                await self.highrise.send_whisper(user.id, f"❌ @{username} bulunamadı.")
+            return
 
-            # Check if target user has moderator privileges
-            target_privileges = await self.highrise.get_room_privilege(target_user.id)
-            if target_privileges.moderator:
-                await self.highrise.chat(f"⚠️ @{username} bir moderatör, susturma kaldırılamaz.")
-                return
-
-            try:
-                await self.highrise.moderate_room(target_user.id, "unmute")
-                await self.highrise.chat(f"🔊 @{username} artık susturulmadı.")
-            except Exception as e:
-                await self.highrise.chat(f"❌ Susturma kaldırma başarısız: {str(e)}")
-                print(f"[UNMUTE HATASI] {e}")
 
     async def on_whisper(self, user: User, message: str) -> None:
         if await self.is_user_allowed(user):
