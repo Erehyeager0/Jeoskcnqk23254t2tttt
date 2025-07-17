@@ -83,7 +83,7 @@ class Bot(BaseBot):
             print("📁 Kat pozisyon dosyası bulunamadı, yeni dosya oluşturulacak.")
 
     def save_kat_positions(self):
-    try:
+        try:
         with open(self.kat_positions_file, "w", encoding="utf-8") as f:
             serializable = {
                 k: {
