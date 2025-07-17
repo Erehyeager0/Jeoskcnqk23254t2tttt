@@ -111,7 +111,7 @@ class Bot(BaseBot):
             print(f"❌ Kat pozisyonları kaydedilirken hata: {e}")
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
-        print(f"{user.username} emote gönderdi: {emote_id}")
+        
 
     async def on_start(self, session_metadata: SessionMetadata) -> None:
         self.user_id = session_metadata.user_id  # Botun kendi ID'sini kaydet
