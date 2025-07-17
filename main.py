@@ -573,25 +573,25 @@ class Bot(BaseBot):
         # !katsil komutu ile pozisyon sil (Sadece admin)
         if message.startswith("!katsil "):
             if not await self.is_user_allowed(user):
-                await self.highrise.chat(f"🚫 Bu komutu kullanamazsın @{user.username}.")
+                await self.highrise.send_whisper(f"🚫 Bu komutu kullanamazsın @{user.username}.")
                 return
 
             silinecek_kat = message[8:].strip()
             if silinecek_kat in self.kat_positions:
                 del self.kat_positions[silinecek_kat]
                 self.save_kat_positions()
-                await self.highrise.chat(f"🗑️ '{silinecek_kat}' pozisyonu silindi.")
+                await self.highrise.send_whisper(f"🗑️ '{silinecek_kat}' pozisyonu silindi.")
             else:
-                await self.highrise.chat(f"❓ '{silinecek_kat}' adlı pozisyon bulunamadı.")
+                await self.highrise.send_whisper(f"❓ '{silinecek_kat}' adlı pozisyon bulunamadı.")
             return
 
         # !katlar komutu ile tüm pozisyonları listele (Herkes kullanabilir)
         if message == "!katlar":
             if not self.kat_positions:
-                await self.highrise.chat("📭 Kayıtlı hiç pozisyon yok.")
+                await self.highrise.send_whisper("📭 Kayıtlı hiç pozisyon yok.")
             else:
                 liste = "\n".join(f"📍 {k}" for k in self.kat_positions.keys())
-                await self.highrise.chat(f"📦 Kayıtlı pozisyonlar:\n{liste}")
+                await self.highrise.send_whisper(f"📦 Kayıtlı pozisyonlar:\n{liste}")
             return
 
         # Direkt kat ismi ile ışınlanma (Herkes için)
@@ -599,9 +599,9 @@ class Bot(BaseBot):
             pos = self.kat_positions[message]
             try:
                 await self.highrise.teleport(user.id, pos)
-                await self.highrise.chat(f"🚀 @{user.username}, '{message}' konumuna ışınlandın!")
+                await self.highrise.send_whisper(f"🚀 @{user.username}, '{message}' konumuna ışınlandın!")
             except Exception as e:
-                await self.highrise.chat(f"⚠️ Işınlanırken hata oluştu: {e}")
+                await self.highrise.send_whisper(f"⚠️ Işınlanırken hata oluştu: {e}")
             return
 
     async def on_whisper(self, user: User, message: str) -> None:
