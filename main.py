@@ -71,16 +71,21 @@ class Bot(BaseBot):
     haricler = ["","","","","","",","]
 
     def load_kat_positions(self):
-        if os.path.exists(self.kat_positions_file):
-            try:
-                with open(self.kat_positions_file, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    self.kat_positions = {k: Position(**v) for k, v in data.items()}
-                print("✅ Kat pozisyonları yüklendi.")
-            except Exception as e:
-                print(f"⚠️ Kat pozisyonları yüklenirken hata: {e}")
-        else:
-            print("📁 Kat pozisyon dosyası bulunamadı, yeni dosya oluşturulacak.")
+    if os.path.exists(self.kat_positions_file):
+        try:
+            with open(self.kat_positions_file, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if not content:
+                    print("📁 Kat pozisyon dosyası boş.")
+                    self.kat_positions = {}
+                    return
+                data = json.loads(content)
+                self.kat_positions = {k: Position(**v) for k, v in data.items()}
+            print("✅ Kat pozisyonları yüklendi.")
+        except Exception as e:
+            print(f"⚠️ Kat pozisyonları yüklenirken hata: {e}")
+    else:
+        print("📁 Kat pozisyon dosyası bulunamadı, yeni dosya oluşturulacak.")
 
     def save_kat_positions(self):
         try:
