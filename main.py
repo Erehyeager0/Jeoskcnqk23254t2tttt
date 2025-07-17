@@ -73,7 +73,7 @@ class Bot(BaseBot):
     def load_kat_positions(self):
         if os.path.exists(self.kat_positions_file):
             try:
-            with open(self.kat_positions_file, "r", encoding="utf-8") as f:
+                with open(self.kat_positions_file, "r", encoding="utf-8") as f:
                 content = f.read().strip()
                 if not content:
                     print("📁 Kat pozisyon dosyası boş.")
