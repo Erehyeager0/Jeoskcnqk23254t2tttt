@@ -72,7 +72,7 @@ class Bot(BaseBot):
 
     def load_kat_positions(self):
         self.kat_positions = {}
-    if os.path.exists(self.kat_positions_file):
+        if os.path.exists(self.kat_positions_file):
             try:
                 with open(self.kat_positions_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
@@ -90,25 +90,25 @@ class Bot(BaseBot):
             print("📁 Kat pozisyon dosyası bulunamadı, yeni dosya oluşturulacak.")
 
     def save_kat_positions(self):
-    try:
-        with open(self.kat_positions_file, "w", encoding="utf-8") as f:
-            json.dump(
-                {
-                    name: {
-                        "x": pos.x,
-                        "y": pos.y,
-                        "z": pos.z,
-                        "facing": pos.facing
-                    }
-                    for name, pos in self.kat_positions.items()
-                },
-                f,
-                ensure_ascii=False,
-                indent=4
-            )
-        print("💾 Kat pozisyonları kaydedildi.")
-    except Exception as e:
-        print(f"❌ Kat pozisyonları kaydedilirken hata: {e}")
+        try:
+            with open(self.kat_positions_file, "w", encoding="utf-8") as f:
+                json.dump(
+                    {
+                        name: {
+                            "x": pos.x,
+                            "y": pos.y,
+                            "z": pos.z,
+                            "facing": pos.facing
+                        }
+                        for name, pos in self.kat_positions.items()
+                    },
+                    f,
+                    ensure_ascii=False,
+                    indent=4
+                )
+            print("💾 Kat pozisyonları kaydedildi.")
+        except Exception as e:
+            print(f"❌ Kat pozisyonları kaydedilirken hata: {e}")
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emote gönderdi: {emote_id}")
