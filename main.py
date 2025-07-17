@@ -532,62 +532,62 @@ class Bot(BaseBot):
             if any(message.startswith(cmd) for cmd in restricted_cmds):
                 await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
-# !kat komutu ile pozisyon kaydet (Sadece admin)
-if msg.startswith("!kat "):
-    if user.username not in self.admins:
-        await self.highrise.chat(f"🚫 Bu komutu kullanamazsın @{user.username}.")
-        return
+        # !kat komutu ile pozisyon kaydet (Sadece admin)
+        if message.startswith("!kat "):
+            if not await self.is_user_allowed(user):
+                await self.highrise.chat(f"🚫 Bu komutu kullanamazsın @{user.username}.")
+                return
 
-    kat_ismi = msg[5:].strip()
-    room_users = (await self.highrise.get_room_users()).content
-    user_pos = None
-    for u, pos in room_users:
-        if u.id == user.id:
-            user_pos = pos
-            break
+            kat_ismi = message[5:].strip()
+            room_users = (await self.highrise.get_room_users()).content
+            user_pos = None
+            for u, pos in room_users:
+                if u.id == user.id:
+                    user_pos = pos
+                    break
 
-    if user_pos is None:
-        await self.highrise.chat(f"⚠️ @{user.username}, konumun alınamadı!")
-        return
+            if user_pos is None:
+                await self.highrise.chat(f"⚠️ @{user.username}, konumun alınamadı!")
+                return
 
-    self.kat_positions[kat_ismi] = user_pos
-    self.save_kat_positions()
-    await self.highrise.chat(f"📌 '{kat_ismi}' adlı pozisyon başarıyla kaydedildi!")
-    return
+            self.kat_positions[kat_ismi] = user_pos
+            self.save_kat_positions()
+            await self.highrise.chat(f"📌 '{kat_ismi}' adlı pozisyon başarıyla kaydedildi!")
+            return
 
-# !katsil komutu ile pozisyon sil (Sadece admin)
-if msg.startswith("!katsil "):
-    if user.username not in self.admins:
-        await self.highrise.chat(f"🚫 Bu komutu kullanamazsın @{user.username}.")
-        return
+        # !katsil komutu ile pozisyon sil (Sadece admin)
+        if message.startswith("!katsil "):
+            if not await self.is_user_allowed(user):
+                await self.highrise.chat(f"🚫 Bu komutu kullanamazsın @{user.username}.")
+                return
 
-    silinecek_kat = msg[8:].strip()
-    if silinecek_kat in self.kat_positions:
-        del self.kat_positions[silinecek_kat]
-        self.save_kat_positions()
-        await self.highrise.chat(f"🗑️ '{silinecek_kat}' pozisyonu silindi.")
-    else:
-        await self.highrise.chat(f"❓ '{silinecek_kat}' adlı pozisyon bulunamadı.")
-    return
+            silinecek_kat = message[8:].strip()
+            if silinecek_kat in self.kat_positions:
+                del self.kat_positions[silinecek_kat]
+                self.save_kat_positions()
+                await self.highrise.chat(f"🗑️ '{silinecek_kat}' pozisyonu silindi.")
+            else:
+                await self.highrise.chat(f"❓ '{silinecek_kat}' adlı pozisyon bulunamadı.")
+            return
 
-# !katlar komutu ile tüm pozisyonları listele (Herkes kullanabilir)
-if msg == "!katlar":
-    if not self.kat_positions:
-        await self.highrise.chat("📭 Kayıtlı hiç pozisyon yok.")
-    else:
-        liste = "\n".join(f"📍 {k}" for k in self.kat_positions.keys())
-        await self.highrise.chat(f"📦 Kayıtlı pozisyonlar:\n{liste}")
-    return
+        # !katlar komutu ile tüm pozisyonları listele (Herkes kullanabilir)
+        if message == "!katlar":
+            if not self.kat_positions:
+                await self.highrise.chat("📭 Kayıtlı hiç pozisyon yok.")
+            else:
+                liste = "\n".join(f"📍 {k}" for k in self.kat_positions.keys())
+                await self.highrise.chat(f"📦 Kayıtlı pozisyonlar:\n{liste}")
+            return
 
-# Direkt kat ismi ile ışınlanma (Herkes için)
-if msg in self.kat_positions:
-    pos = self.kat_positions[msg]
-    try:
-        await self.highrise.teleport(user.id, pos)
-        await self.highrise.chat(f"🚀 @{user.username}, '{msg}' konumuna ışınlandın!")
-    except Exception as e:
-        await self.highrise.chat(f"⚠️ Işınlanırken hata oluştu: {e}")
-    return
+        # Direkt kat ismi ile ışınlanma (Herkes için)
+        if message in self.kat_positions:
+            pos = self.kat_positions[message]
+            try:
+                await self.highrise.teleport(user.id, pos)
+                await self.highrise.chat(f"🚀 @{user.username}, '{message}' konumuna ışınlandın!")
+            except Exception as e:
+                await self.highrise.chat(f"⚠️ Işınlanırken hata oluştu: {e}")
+            return
 
     async def on_whisper(self, user: User, message: str) -> None:
         if await self.is_user_allowed(user):
