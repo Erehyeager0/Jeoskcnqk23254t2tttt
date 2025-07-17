@@ -679,7 +679,9 @@ class Bot(BaseBot):
                 await self.highrise.chat(f"🚫 @{username} bulunamadı.")
                 return
 
-            if target_user.role in ("moderator", "host", "cohost"):
+            # Check if target user has moderator privileges
+            target_privileges = await self.highrise.get_room_privilege(target_user.id)
+            if target_privileges.moderator:
                 await self.highrise.chat(f"⚠️ @{username} bir moderatör, susturma kaldırılamaz.")
                 return
 
