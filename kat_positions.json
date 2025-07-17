@@ -4,5 +4,17 @@
         "y": 0.0,
         "z": 10.5,
         "facing": "BackLeft"
+    },
+    "heykel": {
+        "x": 17.5,
+        "y": 9.5,
+        "z": 9.0,
+        "facing": "FrontRight"
+    },
+    "penci zorno": {
+        "x": 10.5,
+        "y": 5.5,
+        "z": 7.5,
+        "facing": "FrontLeft"
     }
 }
