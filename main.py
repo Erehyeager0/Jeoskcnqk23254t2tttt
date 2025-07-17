@@ -665,9 +665,9 @@ class Bot(BaseBot):
                     print(f"Mute hatası: {e}")
             else:
                 await self.highrise.chat(f"@{username} bulunamadı.")
-               return
+                return
 
-        if msg.startswith("!modekle "):
+        if message.startswith("!modekle "):
             parts = message.split()
             if len(parts) != 2:
                 await self.highrise.send_whisper(user.id, "Kullanım: !modekle @kullanici")
@@ -683,7 +683,7 @@ class Bot(BaseBot):
             return
 
         # !modkaldir komutu
-        if msg.startswith("!modkaldir "):
+        if message.startswith("!modkaldir "):
             parts = message.split()
             if len(parts) != 2:
                 await self.highrise.send_whisper(user.id, "Kullanım: !modkaldir @kullanici")
