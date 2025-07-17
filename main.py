@@ -71,25 +71,25 @@ class Bot(BaseBot):
     haricler = ["","","","","","",","]
 
     def load_kat_positions(self):
-    if os.path.exists(self.kat_positions_file):
-        try:
-            with open(self.kat_positions_file, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                self.kat_positions = {k: Position(**v) for k, v in data.items()}
-            print("✅ Kat pozisyonları yüklendi.")
-        except Exception as e:
-            print(f"⚠️ Kat pozisyonları yüklenirken hata: {e}")
-    else:
-        print("📁 Kat pozisyon dosyası bulunamadı, yeni dosya oluşturulacak.")
+        if os.path.exists(self.kat_positions_file):
+            try:
+                with open(self.kat_positions_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    self.kat_positions = {k: Position(**v) for k, v in data.items()}
+                print("✅ Kat pozisyonları yüklendi.")
+            except Exception as e:
+                print(f"⚠️ Kat pozisyonları yüklenirken hata: {e}")
+        else:
+            print("📁 Kat pozisyon dosyası bulunamadı, yeni dosya oluşturulacak.")
 
     def save_kat_positions(self):
-    try:
-        with open(self.kat_positions_file, "w", encoding="utf-8") as f:
-            serializable = {k: v.dict() for k, v in self.kat_positions.items()}
-            json.dump(serializable, f, ensure_ascii=False, indent=4)
-        print("💾 Kat pozisyonları kaydedildi.")
-    except Exception as e:
-        print(f"❌ Kat pozisyonları kaydedilirken hata: {e}")
+        try:
+            with open(self.kat_positions_file, "w", encoding="utf-8") as f:
+                serializable = {k: v.dict() for k, v in self.kat_positions.items()}
+                json.dump(serializable, f, ensure_ascii=False, indent=4)
+            print("💾 Kat pozisyonları kaydedildi.")
+        except Exception as e:
+            print(f"❌ Kat pozisyonları kaydedilirken hata: {e}")
 
     async def on_emote(self, user: User, emote_id: str, receiver: User | None) -> None:
         print(f"{user.username} emote gönderdi: {emote_id}")
