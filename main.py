@@ -665,30 +665,30 @@ class Bot(BaseBot):
             else:
                 await self.highrise.chat(f"@{username} bulunamadı.")
 
-        if message.startswith("!unmute") and await self.is_user_allowed(user):
-    parts = message.split()
-    if len(parts) != 2:
-        return
+        elif message.startswith("!unmute") and await self.is_user_allowed(user):
+            parts = message.split()
+            if len(parts) != 2:
+                return
 
-    username = parts[1].lstrip("@")
-    room_users = (await self.highrise.get_room_users()).content
+            username = parts[1].lstrip("@")
+            room_users = (await self.highrise.get_room_users()).content
 
-    target_user = next((u for u, _ in room_users if u.username.lower() == username.lower()), None)
+            target_user = next((u for u, _ in room_users if u.username.lower() == username.lower()), None)
 
-    if target_user is None:
-        await self.highrise.chat(f"🚫 @{username} bulunamadı.")
-        return
+            if target_user is None:
+                await self.highrise.chat(f"🚫 @{username} bulunamadı.")
+                return
 
-    if target_user.role in ("moderator", "host", "cohost"):
-        await self.highrise.chat(f"⚠️ @{username} bir moderatör, susturma kaldırılamaz.")
-        return
+            if target_user.role in ("moderator", "host", "cohost"):
+                await self.highrise.chat(f"⚠️ @{username} bir moderatör, susturma kaldırılamaz.")
+                return
 
-    try:
-        await self.highrise.moderate_room(target_user.id, "unmute")
-        await self.highrise.chat(f"🔊 @{username} artık susturulmadı.")
-    except Exception as e:
-        await self.highrise.chat(f"❌ Susturma kaldırma başarısız: {str(e)}")
-        print(f"[UNMUTE HATASI] {e}")
+            try:
+                await self.highrise.moderate_room(target_user.id, "unmute")
+                await self.highrise.chat(f"🔊 @{username} artık susturulmadı.")
+            except Exception as e:
+                await self.highrise.chat(f"❌ Susturma kaldırma başarısız: {str(e)}")
+                print(f"[UNMUTE HATASI] {e}")
 
     async def on_whisper(self, user: User, message: str) -> None:
         if await self.is_user_allowed(user):
