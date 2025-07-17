@@ -533,8 +533,8 @@ class Bot(BaseBot):
                 await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
 # !kat k1 gibi komutla pozisyon kaydetme
-        if msg.startswith("!kat "):
-            kat_ismi = msg[5:].strip()
+        if message.startswith("!kat "):
+            kat_ismi = message[5:].strip()
             room_users = (await self.highrise.get_room_users()).content
             user_pos = None
             for u, pos in room_users:
@@ -552,11 +552,11 @@ class Bot(BaseBot):
             return
 
         # Eğer mesaj kayıtlı bir kat adıysa, ışınlan
-        if msg in self.kat_positions:
-            pos = self.kat_positions[msg]
+        if message in self.kat_positions:
+            pos = self.kat_positions[message]
             try:
                 await self.highrise.teleport(user.id, pos)
-                await self.highrise.chat(f"@{user.username}, '{msg}' pozisyonuna ışınlandın!")
+                await self.highrise.chat(f"@{user.username}, '{message}' pozisyonuna ışınlandın!")
             except Exception as e:
                 await self.highrise.chat(f"Işınlanırken hata oluştu: {e}")
             return
