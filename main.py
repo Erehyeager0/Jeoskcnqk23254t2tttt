@@ -556,16 +556,26 @@ class Bot(BaseBot):
             parts = message.split()
             if len(parts) == 2:
                 kat_adi = parts[1]
-                user_pos = await self.highrise.get_position(user.id)
-                self.kat_positions[kat_adi] = Position(
-                    x=user_pos.x,
-                    y=user_pos.y,
-                    z=user_pos.z,
-                    facing=user_pos.facing
-                )
-                self.save_kat_positions()
-                self.load_kat_positions()  # Belleğe tekrar yükle
-                await self.highrise.send_whisper(user.id, f"✅ '{kat_adi}' adlı kat konumu kaydedildi.")
+                # Get user position from room users
+                room_users = await self.highrise.get_room_users()
+                user_pos = None
+                for u, pos in room_users.content:
+                    if u.id == user.id:
+                        user_pos = pos
+                        break
+                
+                if user_pos:
+                    self.kat_positions[kat_adi] = Position(
+                        x=user_pos.x,
+                        y=user_pos.y,
+                        z=user_pos.z,
+                        facing=user_pos.facing
+                    )
+                    self.save_kat_positions()
+                    self.load_kat_positions()  # Belleğe tekrar yükle
+                    await self.highrise.send_whisper(user.id, f"✅ '{kat_adi}' adlı kat konumu kaydedildi.")
+                else:
+                    await self.highrise.send_whisper(user.id, "❌ Pozisyon alınamadı.")
             else:
                 await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !kat k1")
             return
