@@ -385,7 +385,9 @@ class Bot(BaseBot):
                     elif target_location and target_location in ready_locations:
                         await self.highrise.teleport(target_user.id, ready_locations[target_location])
                         await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
-                        await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
+                        # Don't whisper to the bot itself
+                        if target_user.id != self.user_id:
+                            await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
                     else:
                         target_pos = next((pos for u, pos in room_users.content if u.username.lower() == target_username.lower()), None)
                         if target_pos:
