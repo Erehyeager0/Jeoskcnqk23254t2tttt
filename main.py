@@ -552,7 +552,7 @@ class Bot(BaseBot):
             if any(message.startswith(cmd) for cmd in restricted_cmds):
                 await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
-if message.startswith("!kat "):
+        if message.startswith("!kat "):
             parts = message.split()
             if len(parts) == 2:
                 kat_adi = parts[1]
