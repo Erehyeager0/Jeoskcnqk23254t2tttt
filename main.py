@@ -417,7 +417,7 @@ class Bot(BaseBot):
         # Yetkili kullanıcı mı kontrolü
         if await self.is_user_allowed(user):
             if message.startswith("!tp "):
-    parts = message.split()
+                parts = message.split()
     if len(parts) >= 2:
         target_username = parts[1].lstrip("@")
         target_location = " ".join(parts[2:]) if len(parts) > 2 else None
