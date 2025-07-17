@@ -417,31 +417,31 @@ class Bot(BaseBot):
         # Yetkili kullanıcı mı kontrolü
         if await self.is_user_allowed(user):
             if message.startswith("!tp "):
-        parts = message.split()
-        if len(parts) >= 2:
+            parts = message.split()
+            if len(parts) >= 2:
             target_username = parts[1].lstrip("@")
-            target_location = parts[2] if len(parts) > 2 else None
+                target_location = parts[2] if len(parts) > 2 else None
 
-            room_users = await self.highrise.get_room_users()
-            target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
+                room_users = await self.highrise.get_room_users()
+                target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
 
-            if not target_user:
-                await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
-            elif target_location and target_location in self.kat_positions:
-                await self.highrise.teleport(target_user.id, self.kat_positions[target_location])
-                await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
-                if target_user.id != self.user_id:
-                    await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
-            else:
-                target_pos = next((pos for u, pos in room_users.content if u.username.lower() == target_username.lower()), None)
-                if target_pos:
-                    await self.highrise.teleport(user.id, target_pos)
-                    await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
+                if not target_user:
+                    await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
+                elif target_location and target_location in self.kat_positions:
+                    await self.highrise.teleport(target_user.id, self.kat_positions[target_location])
+                    await self.highrise.send_whisper(user.id, f"✅ {target_username}, '{target_location}' konumuna ışınlandı.")
+                    if target_user.id != self.user_id:
+                        await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni '{target_location}' konumuna ışınladı.")
                 else:
-                    await self.highrise.send_whisper(user.id, f"❌ {target_username} kullanıcısının pozisyonu alınamadı.")
-        else:
-            await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanıcı [konum]")
-        return
+                    target_pos = next((pos for u, pos in room_users.content if u.username.lower() == target_username.lower()), None)
+                    if target_pos:
+                        await self.highrise.teleport(user.id, target_pos)
+                        await self.highrise.send_whisper(user.id, f"✅ {target_username} kullanıcısına ışınlandın.")
+                    else:
+                        await self.highrise.send_whisper(user.id, f"❌ {target_username} kullanıcısının pozisyonu alınamadı.")
+            else:
+                await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !tp @kullanıcı [konum]")
+            return
         
 
             elif message.startswith("!gel "):
@@ -554,22 +554,22 @@ class Bot(BaseBot):
                 await self.highrise.send_whisper(user.id, "❌ Bu komutu kullanmak için yetkin yok.")
 
 if message.startswith("!kat "):
-        parts = message.split()
-        if len(parts) == 2:
-            kat_adi = parts[1]
-            user_pos = await self.highrise.get_position(user.id)
-            self.kat_positions[kat_adi] = Position(
-                x=user_pos.x,
-                y=user_pos.y,
-                z=user_pos.z,
-                facing=user_pos.facing
-            )
-            self.save_kat_positions()
-            self.load_kat_positions()  # Belleğe tekrar yükle
-            await self.highrise.send_whisper(user.id, f"✅ '{kat_adi}' adlı kat konumu kaydedildi.")
-        else:
-            await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !kat k1")
-        return
+            parts = message.split()
+            if len(parts) == 2:
+                kat_adi = parts[1]
+                user_pos = await self.highrise.get_position(user.id)
+                self.kat_positions[kat_adi] = Position(
+                    x=user_pos.x,
+                    y=user_pos.y,
+                    z=user_pos.z,
+                    facing=user_pos.facing
+                )
+                self.save_kat_positions()
+                self.load_kat_positions()  # Belleğe tekrar yükle
+                await self.highrise.send_whisper(user.id, f"✅ '{kat_adi}' adlı kat konumu kaydedildi.")
+            else:
+                await self.highrise.send_whisper(user.id, "⚠️ Kullanım: !kat k1")
+            return
 
         # !katsil komutu ile pozisyon sil (Sadece admin)
         if message.startswith("!katsil "):
