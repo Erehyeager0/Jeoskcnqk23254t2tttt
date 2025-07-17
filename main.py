@@ -417,10 +417,10 @@ class Bot(BaseBot):
         # Yetkili kullanıcı mı kontrolü
         if await self.is_user_allowed(user):
             if message.startswith("!tp "):
-            parts = message.split()
-            if len(parts) >= 2:
-            target_username = parts[1].lstrip("@")
-                target_location = parts[2] if len(parts) > 2 else None
+                parts = message.split()
+                if len(parts) >= 2:
+                    target_username = parts[1].lstrip("@")
+                    target_location = parts[2] if len(parts) > 2 else None
 
                 room_users = await self.highrise.get_room_users()
                 target_user = next((u for u, _ in room_users.content if u.username.lower() == target_username.lower()), None)
