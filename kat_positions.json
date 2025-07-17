@@ -1,14 +1,20 @@
 {
-    "k1": {
-        "x": 3.0,
-        "y": 0.0,
-        "z": 10.5,
-        "facing": "BackLeft"
+    "heykel": {
+        "x": 12.5,
+        "y": 9.0,
+        "z": 5.5,
+        "facing": "FrontRight"
     },
-    "penci zorno": {
+    "k1": {
+        "x": 9.5,
+        "y": 0.25,
+        "z": 8.5,
+        "facing": "FrontRight"
+    },
+    "k2": {
         "x": 10.5,
         "y": 5.5,
         "z": 7.5,
-        "facing": "FrontLeft"
+        "facing": "FrontRight"
     }
 }

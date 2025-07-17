@@ -614,6 +614,73 @@ class Bot(BaseBot):
                 await self.highrise.send_whisper(user.id, f"⚠️ Işınlanırken hata oluştu: {e}")
             return
 
+# Yetki kontrolü olan admin komutları (dakika)
+if message.lower().startswith("!ban") and await self.is_user_allowed(user):
+    parts = message.split()
+    if len(parts) < 2:
+        return
+    username = parts[1].lstrip("@")
+    duration = int(parts[2]) * 60 if len(parts) >= 3 and parts[2].isdigit() else 60
+    room_users = (await self.highrise.get_room_users()).content
+    user_id = next((u.id for u, _ in room_users if u.username.lower() == username.lower()), None)
+    if user_id:
+        try:
+            await self.highrise.moderate_room(user_id, "ban", duration)
+            await self.highrise.chat(f"🚫 @{username} {duration // 60} dakika banlandı.")
+        except Exception as e:
+            print(f"Ban hatası: {e}")
+    else:
+        await self.highrise.chat(f"@{username} bulunamadı.")
+
+elif message.lower().startswith("!unban") and await self.is_user_allowed(user):
+    parts = message.split()
+    if len(parts) != 2:
+        return
+    username = parts[1].lstrip("@")
+    room_users = (await self.highrise.get_room_users()).content
+    user_id = next((u.id for u, _ in room_users if u.username.lower() == username.lower()), None)
+    if user_id:
+        try:
+            await self.highrise.moderate_room(user_id, "unban")
+            await self.highrise.chat(f"🔓 @{username} ban kaldırıldı.")
+        except Exception as e:
+            print(f"Unban hatası: {e}")
+    else:
+        await self.highrise.chat(f"@{username} bulunamadı.")
+
+elif message.lower().startswith("!mute") and await self.is_user_allowed(user):
+    parts = message.split()
+    if len(parts) < 2:
+        return
+    username = parts[1].lstrip("@")
+    duration = int(parts[2]) * 60 if len(parts) >= 3 and parts[2].isdigit() else 60
+    room_users = (await self.highrise.get_room_users()).content
+    user_id = next((u.id for u, _ in room_users if u.username.lower() == username.lower()), None)
+    if user_id:
+        try:
+            await self.highrise.moderate_room(user_id, "mute", duration)
+            await self.highrise.chat(f"🔇 @{username} {duration // 60} dakika susturuldu.")
+        except Exception as e:
+            print(f"Mute hatası: {e}")
+    else:
+        await self.highrise.chat(f"@{username} bulunamadı.")
+
+elif message.lower().startswith("!unmute") and await self.is_user_allowed(user):
+    parts = message.split()
+    if len(parts) != 2:
+        return
+    username = parts[1].lstrip("@")
+    room_users = (await self.highrise.get_room_users()).content
+    user_id = next((u.id for u, _ in room_users if u.username.lower() == username.lower()), None)
+    if user_id:
+        try:
+            await self.highrise.moderate_room(user_id, "unmute")
+            await self.highrise.chat(f"🔈 @{username} susturma kaldırıldı.")
+        except Exception as e:
+            print(f"Unmute hatası: {e}")
+    else:
+        await self.highrise.chat(f"@{username} bulunamadı.")
+
     async def on_whisper(self, user: User, message: str) -> None:
         if await self.is_user_allowed(user):
             # Yetkiliyse odaya mesajı gönder
