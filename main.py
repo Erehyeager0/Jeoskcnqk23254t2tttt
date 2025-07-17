@@ -415,8 +415,7 @@ class Bot(BaseBot):
             return
 
         # Yetkili kullanıcı mı kontrolü
-        if await
-self.is_user_allowed(user)
+        if await self.is_user_allowed(user):
             if message.startswith("!tp "):
     parts = message.split()
     if len(parts) >= 2:
