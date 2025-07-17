@@ -405,7 +405,9 @@ class Bot(BaseBot):
                     if user_pos:
                         await self.highrise.teleport(target_user.id, user_pos)
                     await self.highrise.send_whisper(user.id, f"✅ {target_username} yanına ışınlandı.")
-                    await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni yanına ışınladı.")
+                    # Don't whisper to the bot itself
+                    if target_user.id != self.user_id:
+                        await self.highrise.send_whisper(target_user.id, f"📍 {user.username} seni yanına ışınladı.")
                 else:
                     await self.highrise.send_whisper(user.id, f"❌ {target_username} odada bulunamadı.")
                 return
