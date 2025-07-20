@@ -119,11 +119,11 @@ class Bot(BaseBot):
         print("Emote botu başarıyla bağlandı ✅")
 
         await self.highrise.tg.create_task(
-            self.highrise.teleport(session_metadata.user_id, Position(4, 0, 4, "FrontRight"))
+            self.highrise.teleport(session_metadata.user_id, Position(19.5, 0, 12, "FrontLeft"))
         )
 
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        await self.highrise.chat(f"@{user.username},🔥Marjinal Club'a🔥 Hoşgeldin!")
+        await self.highrise.chat(f"@{user.username},🔥Inferno Club'a🔥 Hoşgeldin!")
         try:
             emote_name = random.choice(list(secili_emote.keys()))
             emote_info = secili_emote[emote_name]
@@ -667,41 +667,6 @@ class Bot(BaseBot):
                 await self.highrise.chat(f"@{username} bulunamadı.")
                 return
 
-        if message.startswith("!modekle "):
-            parts = message.split()
-            if len(parts) != 2:
-                await self.highrise.send_whisper(user.id, "Kullanım: !modekle @kullanici")
-                return
-            username = parts[1].lstrip("@")
-            room_users = (await self.highrise.get_room_users()).content
-            target_user = next((u for u, _ in room_users if u.username.lower() == username.lower()), None)
-            if target_user:
-                self.mod_users.add(target_user.id)  # veya target_user.username
-                await self.highrise.send_whisper(user.id, f"✅ @{username} moderatör olarak eklendi.")
-            else:
-                await self.highrise.send_whisper(user.id, f"❌ @{username} bulunamadı.")
-            return
-
-        # !modkaldir komutu
-        if message.startswith("!modkaldir "):
-            parts = message.split()
-            if len(parts) != 2:
-                await self.highrise.send_whisper(user.id, "Kullanım: !modkaldir @kullanici")
-                return
-            username = parts[1].lstrip("@")
-            room_users = (await self.highrise.get_room_users()).content
-            target_user = next((u for u, _ in room_users if u.username.lower() == username.lower()), None)
-            if target_user:
-                if target_user.id in self.mod_users:
-                    self.mod_users.remove(target_user.id)
-                    await self.highrise.send_whisper(user.id, f"✅ @{username} moderatörlükten çıkarıldı.")
-                else:
-                    await self.highrise.send_whisper(user.id, f"❌ @{username} zaten moderatör değil.")
-            else:
-                await self.highrise.send_whisper(user.id, f"❌ @{username} bulunamadı.")
-            return
-
-
     async def on_whisper(self, user: User, message: str) -> None:
         if await self.is_user_allowed(user):
             # Yetkiliyse odaya mesajı gönder
@@ -801,7 +766,7 @@ class Bot(BaseBot):
 
     async def is_user_allowed(self, user: User) -> bool:
         user_privileges = await self.highrise.get_room_privilege(user.id)
-        return user_privileges.moderator or user.username in ["Carterers", "Batuhan_03a"]
+        return user_privileges.moderator or user.username in ["Carterers", "revenqee"]
 
     async def on_tip(self, sender: User, receiver: User, tip: CurrencyItem | Item) -> None:
         message = f"{sender.username} tarafından {receiver.username} adlı kişiye {tip.amount} miktarında hediye gönderildi! 🎁 Teşekkürler!"
@@ -841,8 +806,8 @@ if __name__ == "__main__":
 
     time.sleep(2)
 
-    room_id = "6862d2d8d4ad9540407d076a"
-    bot_token = "ccb36486b5686dbc60ac97e550a82ebd475dfd402e84c1ed109f8da74538fefd"
+    room_id = "687611a023941ba4eec7357e "
+    bot_token = "b12ccae2fb89720ec1199c5759c4d5251a76ef0ea97ad3ba8ead76648f87b2e1"
     bot = Bot()
 
     definitions = [BotDefinition(bot, room_id, bot_token)]
